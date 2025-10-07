@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://RoomListView.title"
+      focusComponent="roomsDataGrid">
+    <data>
+        <collection id="roomsDc"
+                    class="com.ghazal.ims2.entity.Room">
+            <fetchPlan extends="_base">
+                <property name="name"/>
+                <property name="points" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="roomsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Room e order by e.name]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="roomsDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="roomsDataGrid.create"/>
+            <button id="editButton" action="roomsDataGrid.edit"/>
+            <button id="removeButton" action="roomsDataGrid.remove"/>
+            <simplePagination id="pagination" dataLoader="roomsDl"/>
+        </hbox>
+        <dataGrid id="roomsDataGrid"
+                  width="100%"
+                  columnReorderingAllowed="true"
+                  minHeight="20em"
+                  dataContainer="roomsDc">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="name"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

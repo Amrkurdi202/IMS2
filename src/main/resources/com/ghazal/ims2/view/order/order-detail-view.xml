@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://OrderDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="orderDc"
+                  class="com.ghazal.ims2.entity.Order">
+            <fetchPlan extends="_base">
+                <property name="user" fetchPlan="_base"/>
+                <property name="warehouse" fetchPlan="_base"/>
+                <property name="project" fetchPlan="_base"/>
+                <property name="items" fetchPlan="_base">
+                    <property name="item" fetchPlan="_base"/>
+                    <property name="quantity"/>
+                </property>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="itemsDc" property="items"/>
+    </data>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <layout>
+        <formLayout id="form" dataContainer="orderDc">
+            <entityPicker id="userField" property="user"/>
+            <entityPicker id="warehouseField" property="warehouse"/>
+            <entityPicker id="projectField" property="project"/>
+        </formLayout>
+        <vbox width="100%">
+            <hbox width="100%">
+                <h3>Items</h3>
+                <button id="itemsCreateButton" action="itemsDataGrid.create"/>
+                <button id="itemsEditButton" action="itemsDataGrid.edit"/>
+                <button id="itemsRemoveButton" action="itemsDataGrid.remove"/>
+            </hbox>
+            <dataGrid id="itemsDataGrid"
+                      width="100%"
+                      dataContainer="itemsDc"
+                      minHeight="15em">
+                <actions>
+                    <action id="create" type="list_create"/>
+                    <action id="edit" type="list_edit"/>
+                    <action id="remove" type="list_remove"/>
+                </actions>
+                <columns>
+                    <column property="item"/>
+                    <column property="quantity"/>
+                </columns>
+            </dataGrid>
+        </vbox>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

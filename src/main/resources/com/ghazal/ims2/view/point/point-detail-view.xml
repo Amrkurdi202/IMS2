@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://PointDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="pointDc"
+                  class="com.ghazal.ims2.entity.Point">
+            <fetchPlan extends="_base">
+                <property name="name"/>
+                <property name="factor"/>
+                <property name="image"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+    </data>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <layout>
+        <formLayout id="form" dataContainer="pointDc">
+            <textField id="nameField" property="name" required="true"/>
+            <bigDecimalField id="factorField" property="factor"/>
+            <fileUploadField id="imageField" property="image"/>
+        </formLayout>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://ProjectDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="projectDc"
+                  class="com.ghazal.ims2.entity.Project">
+            <fetchPlan extends="_base">
+                <property name="name"/>
+                <property name="image"/>
+                <property name="rooms" fetchPlan="_base">
+                    <property name="name"/>
+                </property>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="roomsDc" property="rooms"/>
+    </data>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <layout>
+        <formLayout id="form" dataContainer="projectDc">
+            <textField id="nameField" property="name" required="true"/>
+            <fileUploadField id="imageField" property="image"/>
+        </formLayout>
+        <vbox width="100%">
+            <hbox width="100%">
+                <h3>Rooms</h3>
+                <button id="roomsCreateButton" action="roomsDataGrid.create"/>
+                <button id="roomsEditButton" action="roomsDataGrid.edit"/>
+                <button id="roomsRemoveButton" action="roomsDataGrid.remove"/>
+            </hbox>
+            <dataGrid id="roomsDataGrid"
+                      width="100%"
+                      dataContainer="roomsDc"
+                      minHeight="15em">
+                <actions>
+                    <action id="create" type="list_create"/>
+                    <action id="edit" type="list_edit"/>
+                    <action id="remove" type="list_remove"/>
+                </actions>
+                <columns>
+                    <column property="name"/>
+                </columns>
+            </dataGrid>
+        </vbox>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

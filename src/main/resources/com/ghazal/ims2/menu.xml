@@ -3,6 +3,14 @@
 
     <menu id="application" title="msg://com.ghazal.ims2/menu.application.title" opened="true">
         <item view="User.list" title="msg://com.ghazal.ims2.view.user/UserListView.title"/>
+        <item view="Item.list" title="msg://com.ghazal.ims2.view.item/ItemListView.title"/>
+        <item view="Warehouse.list" title="msg://com.ghazal.ims2.view.warehouse/WarehouseListView.title"/>
+        <item view="Unit.list" title="msg://com.ghazal.ims2.view.unit/UnitListView.title"/>
+        <item view="ItemUnitPrice.list" title="msg://com.ghazal.ims2.view.itemunitprice/ItemUnitPriceListView.title"/>
+        <item view="Project.list" title="msg://com.ghazal.ims2.view.project/ProjectListView.title"/>
+        <item view="Room.list" title="msg://com.ghazal.ims2.view.room/RoomListView.title"/>
+        <item view="Point.list" title="msg://com.ghazal.ims2.view.point/PointListView.title"/>
+        <item view="Order.list" title="msg://com.ghazal.ims2.view.order/OrderListView.title"/>
     </menu>
 
 </menu-config>
