@@ -14,7 +14,7 @@
             </fetchPlan>
             <loader/>
         </instance>
-        <collection id="pointsDc" property="points"/>
+        <collection id="pointsDc"/>
     </data>
     <actions>
         <action id="saveAction" type="detail_saveClose"/>

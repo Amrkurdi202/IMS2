@@ -6,17 +6,14 @@
         <instance id="orderDc"
                   class="com.ghazal.ims2.entity.Order">
             <fetchPlan extends="_base">
-                <property name="user" fetchPlan="_base"/>
                 <property name="warehouse" fetchPlan="_base"/>
                 <property name="project" fetchPlan="_base"/>
                 <property name="items" fetchPlan="_base">
-                    <property name="item" fetchPlan="_base"/>
-                    <property name="quantity"/>
                 </property>
             </fetchPlan>
             <loader/>
         </instance>
-        <collection id="itemsDc" property="items"/>
+        <collection id="itemsDc"/>
     </data>
     <actions>
         <action id="saveAction" type="detail_saveClose"/>

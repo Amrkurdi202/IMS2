@@ -7,9 +7,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 
-@Table(name = "Item")
 @JmixEntity
 @Entity
+@Table(name = "ITEM")
 public class Item extends BaseEntity {
     @InstanceName
     @Column(nullable = false)
@@ -42,3 +42,5 @@ public class Item extends BaseEntity {
         return "Item(name=" + this.getName() + ", image=" + java.util.Arrays.toString(this.getImage()) + ")";
     }
 }
+
+

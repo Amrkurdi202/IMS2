@@ -5,11 +5,13 @@ import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 import java.util.List;
 
 @JmixEntity
 @Entity
+@Table(name = "PROJECT")
 public class Project extends BaseEntity {
     @InstanceName
     @Column(nullable = false)

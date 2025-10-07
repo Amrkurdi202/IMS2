@@ -6,15 +6,12 @@
         <instance id="projectDc"
                   class="com.ghazal.ims2.entity.Project">
             <fetchPlan extends="_base">
-                <property name="name"/>
-                <property name="image"/>
                 <property name="rooms" fetchPlan="_base">
-                    <property name="name"/>
                 </property>
             </fetchPlan>
             <loader/>
         </instance>
-        <collection id="roomsDc" property="rooms"/>
+        <collection id="roomsDc"/>
     </data>
     <actions>
         <action id="saveAction" type="detail_saveClose"/>

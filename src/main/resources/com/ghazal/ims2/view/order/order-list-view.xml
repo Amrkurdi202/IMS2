@@ -6,14 +6,13 @@
         <collection id="ordersDc"
                     class="com.ghazal.ims2.entity.Order">
             <fetchPlan extends="_base">
-                <property name="user" fetchPlan="_base"/>
                 <property name="warehouse" fetchPlan="_base"/>
                 <property name="project" fetchPlan="_base"/>
                 <property name="items" fetchPlan="_base"/>
             </fetchPlan>
             <loader id="ordersDl" readOnly="true">
                 <query>
-                    <![CDATA[select e from Order e order by e.createdDate desc]]>
+                    <![CDATA[select e from ORDER e order by e.createdDate desc]]>
                 </query>
             </loader>
         </collection>

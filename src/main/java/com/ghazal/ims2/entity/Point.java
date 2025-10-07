@@ -4,11 +4,13 @@ import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 
 @JmixEntity
 @Entity
+@Table(name = "POINT")
 public class Point extends BaseEntity {
     @InstanceName
     @Column(nullable = false)

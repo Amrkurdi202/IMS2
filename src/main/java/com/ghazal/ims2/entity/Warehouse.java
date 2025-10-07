@@ -5,9 +5,11 @@ import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 
 @JmixEntity
 @Entity
+@Table(name = "WAREHOUSE")
 public class Warehouse extends BaseEntity {
     @Column(nullable = false)
     @InstanceName
