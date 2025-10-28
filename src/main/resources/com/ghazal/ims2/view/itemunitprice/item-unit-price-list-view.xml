@@ -6,9 +6,7 @@
         <collection id="itemUnitPricesDc"
                     class="com.ghazal.ims2.entity.ItemUnitPrice">
             <fetchPlan extends="_base">
-                <property name="item" fetchPlan="_base"/>
                 <property name="unit" fetchPlan="_base"/>
-                <property name="price"/>
                 <property name="warehouse" fetchPlan="_base"/>
             </fetchPlan>
             <loader id="itemUnitPricesDl" readOnly="true">

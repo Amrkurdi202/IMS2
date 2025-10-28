@@ -5,11 +5,8 @@
     <data>
         <instance id="itemDc"
                   class="com.ghazal.ims2.entity.Item">
-            <fetchPlan extends="_base">
-                <property name="name"/>
-                <property name="image"/>
-            </fetchPlan>
-            <loader/>
+            <fetchPlan extends="_base"/>
+            <loader id="itemDl"/>
         </instance>
     </data>
     <actions>
@@ -19,11 +16,21 @@
     <facets>
         <dataLoadCoordinator auto="true"/>
     </facets>
+
     <layout>
         <formLayout id="form" dataContainer="itemDc">
-            <textField id="nameField" property="name" required="true"/>
-            <fileUploadField id="imageField" property="image"/>
+            <vbox>
+                <textField id="nameField" property="name" required="true" dataContainer="itemDc"/>
+                <image id="image" property="image" dataContainer="itemDc"/>
+                <fileUploadField
+                        dataContainer="itemDc"
+                        id="imageField"
+                                 property="image"
+                                 clearButtonVisible="true"
+                                 fileNameVisible="true"/>
+            </vbox>
         </formLayout>
+
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>

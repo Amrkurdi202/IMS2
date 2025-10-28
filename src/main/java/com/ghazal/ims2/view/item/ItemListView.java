@@ -17,15 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 @LookupComponent("itemsDataGrid")
 @DialogMode(width = "64em")
 public class ItemListView extends StandardListView<Item> {
-    @ViewComponent
+
+    @ViewComponent("itemsDataGrid")
     private DataGrid<Item> itemDataGrid;
 
     @Autowired
     private UiComponents uiComponents;
-
-    public ItemListView(DataGrid<Item> itemDataGrid) {
-        this.itemDataGrid = itemDataGrid;
-    }
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -35,13 +32,11 @@ public class ItemListView extends StandardListView<Item> {
                         JmixImage image = uiComponents.create(JmixImage.class);
                         image.setWidth("40px");
                         image.setHeight("40px");
-
                         StreamResource streamResource = new StreamResource(
-                                "preview.jpg",     // or some dynamic name if you wish
+                                "preview.jpg",
                                 () -> new java.io.ByteArrayInputStream(photo)
                         );
                         image.setSrc(streamResource);
-
                         return image;
                     } else {
                         return new Span();

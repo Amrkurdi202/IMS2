@@ -2,9 +2,7 @@ package com.ghazal.ims2.entity;
 
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 
 @JmixEntity
@@ -14,7 +12,9 @@ public class Item extends BaseEntity {
     @InstanceName
     @Column(nullable = false)
     private String name;
-    @Column
+
+    @Lob
+    @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] image;
 
     public Item() {

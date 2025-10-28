@@ -6,8 +6,6 @@
         <instance id="warehouseDc"
                   class="com.ghazal.ims2.entity.Warehouse">
             <fetchPlan extends="_base">
-                <property name="name"/>
-                <property name="image"/>
             </fetchPlan>
             <loader/>
         </instance>
@@ -21,8 +19,15 @@
     </facets>
     <layout>
         <formLayout id="form" dataContainer="warehouseDc">
-            <textField id="nameField" property="name" required="true"/>
-            <fileUploadField id="imageField" property="image"/>
+            <vbox>
+                <textField id="nameField" property="name" required="true"/>
+                <vbox id="photoBox"
+                      spacing="true"
+                      width="100%"
+                      minHeight="320px"/>
+                <fileUploadField id="imageField" property="image"/>
+            </vbox>
+
         </formLayout>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>

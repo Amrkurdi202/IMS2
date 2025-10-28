@@ -5,7 +5,6 @@ import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 
 
-
 import java.math.BigDecimal;
 
 @JmixEntity
@@ -17,9 +16,14 @@ public class ProjectPoint {
     public Long id;
 
     @InstanceName
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "point_id", nullable = false)
     private Point point;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
+
     @Column(nullable = false)
     @InstanceName
     private BigDecimal quantity;
@@ -54,7 +58,21 @@ public class ProjectPoint {
         return this;
     }
 
+    @Override
     public String toString() {
-        return "ProjectPoint(id=" + this.getId() + ", point=" + this.getPoint() + ", quantity=" + this.getQuantity() + ")";
+        return "ProjectPoint{" +
+                "id=" + id +
+                ", point=" + point +
+                ", room=" + room +
+                ", quantity=" + quantity +
+                '}';
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 }

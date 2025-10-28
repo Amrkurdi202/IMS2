@@ -32,7 +32,7 @@ public class BaseEntity {
     private String createdBy;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE")
+    @Column(name = "CREATED_DATE", columnDefinition = "DATETIME")
     private OffsetDateTime createdDate;
 
     @LastModifiedBy
@@ -40,7 +40,7 @@ public class BaseEntity {
     private String lastModifiedBy;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE")
+    @Column(name = "LAST_MODIFIED_DATE", columnDefinition = "DATETIME")
     private OffsetDateTime lastModifiedDate;
 
     @DeletedBy
@@ -48,7 +48,7 @@ public class BaseEntity {
     private String deletedBy;
 
     @DeletedDate
-    @Column(name = "DELETED_DATE")
+    @Column(name = "DELETED_DATE", columnDefinition = "DATETIME")
     private OffsetDateTime deletedDate;
 
     public OffsetDateTime getDeletedDate() {

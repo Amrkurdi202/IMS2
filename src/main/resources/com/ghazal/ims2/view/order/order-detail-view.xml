@@ -13,7 +13,7 @@
             </fetchPlan>
             <loader/>
         </instance>
-        <collection id="itemsDc"/>
+        <collection id="itemsDc" class="com.ghazal.ims2.entity.OrderItem"/>
     </data>
     <actions>
         <action id="saveAction" type="detail_saveClose"/>

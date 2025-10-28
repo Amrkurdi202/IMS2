@@ -2,41 +2,45 @@
 <view xmlns="http://jmix.io/schema/flowui/view"
       title="msg://RoomDetailView.title"
       focusComponent="form">
+
     <data>
         <instance id="roomDc"
                   class="com.ghazal.ims2.entity.Room">
             <fetchPlan extends="_base">
-                <property name="name"/>
                 <property name="points" fetchPlan="_base">
-                    <property name="point" fetchPlan="_base"/>
-                    <property name="quantity"/>
+                    <property name="point" fetchPlan="_instance_name"/>
                 </property>
             </fetchPlan>
             <loader/>
+            <collection id="pointsDc" property="points"/>
         </instance>
-        <collection id="pointsDc"/>
     </data>
+
     <actions>
         <action id="saveAction" type="detail_saveClose"/>
         <action id="closeAction" type="detail_close"/>
     </actions>
+
     <facets>
         <dataLoadCoordinator auto="true"/>
     </facets>
+
     <layout>
         <formLayout id="form" dataContainer="roomDc">
             <textField id="nameField" property="name" required="true"/>
         </formLayout>
+
         <vbox width="100%">
-            <hbox width="100%">
-                <h3>Points</h3>
-                <button id="pointsCreateButton" action="pointsDataGrid.create"/>
-                <button id="pointsEditButton" action="pointsDataGrid.edit"/>
-                <button id="pointsRemoveButton" action="pointsDataGrid.remove"/>
+            <hbox classNames="buttons-panel">
+                <button action="pointsDataGrid.create"/>
+                <button action="pointsDataGrid.edit"/>
+                <button action="pointsDataGrid.remove"/>
             </hbox>
+
             <dataGrid id="pointsDataGrid"
-                      width="100%"
                       dataContainer="pointsDc"
+                      width="100%"
+                      editorBuffered="true"
                       minHeight="15em">
                 <actions>
                     <action id="create" type="list_create"/>
@@ -44,11 +48,17 @@
                     <action id="remove" type="list_remove"/>
                 </actions>
                 <columns>
-                    <column property="point"/>
-                    <column property="quantity"/>
+                    <column property="point" editable="true"/>
+                    <column property="quantity" editable="true"/>
                 </columns>
+                <editorActionsColumn key="editor">
+                    <editButton icon="PENCIL"/>
+                    <saveButton icon="CHECK" themeNames="success"/>
+                    <cancelButton icon="CLOSE" themeNames="error"/>
+                </editorActionsColumn>
             </dataGrid>
         </vbox>
+
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>

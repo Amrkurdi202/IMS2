@@ -2,9 +2,7 @@ package com.ghazal.ims2.entity;
 
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
@@ -15,7 +13,11 @@ public class Point extends BaseEntity {
     @InstanceName
     @Column(nullable = false)
     private String name;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] image;
+    @Column(name = "factor")
     private BigDecimal factor;
 
     public Point() {

@@ -1,11 +1,11 @@
 package com.ghazal.ims2.entity;
 
+import io.jmix.core.DeletePolicy;
+import io.jmix.core.entity.annotation.OnDelete;
+import io.jmix.core.metamodel.annotation.Composition;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -16,8 +16,14 @@ public class Project extends BaseEntity {
     @InstanceName
     @Column(nullable = false)
     private String name;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] image;
-    @OneToMany
+
+    @Composition
+    @OnDelete(DeletePolicy.CASCADE)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Room> rooms;
 
     public Project() {

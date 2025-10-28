@@ -6,8 +6,6 @@
         <collection id="itemsDc"
                     class="com.ghazal.ims2.entity.Item">
             <fetchPlan extends="_base">
-                <property name="name"/>
-                <property name="image"/>
             </fetchPlan>
             <loader id="itemsDl" readOnly="true">
                 <query>
@@ -50,7 +48,6 @@
             </actions>
             <columns resizable="true">
                 <column property="name"/>
-                <column property="image"/>
             </columns>
         </dataGrid>
         <hbox id="lookupActions" visible="false">

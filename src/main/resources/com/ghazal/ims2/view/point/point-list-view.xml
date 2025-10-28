@@ -6,9 +6,6 @@
         <collection id="pointsDc"
                     class="com.ghazal.ims2.entity.Point">
             <fetchPlan extends="_base">
-                <property name="name"/>
-                <property name="factor"/>
-                <property name="image"/>
             </fetchPlan>
             <loader id="pointsDl" readOnly="true">
                 <query>

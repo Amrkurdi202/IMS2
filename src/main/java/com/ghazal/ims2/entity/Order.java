@@ -7,8 +7,8 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @JmixEntity
-@Entity
-@Table(name = "ORDER")
+@Entity(name = "ims_Order")
+@Table(name = "ims_Order")
 public class Order extends BaseEntity {
     @InstanceName
     @ManyToOne(fetch = FetchType.LAZY)

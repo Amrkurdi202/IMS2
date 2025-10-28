@@ -6,8 +6,6 @@
         <collection id="warehousesDc"
                     class="com.ghazal.ims2.entity.Warehouse">
             <fetchPlan extends="_base">
-                <property name="name"/>
-                <property name="image"/>
             </fetchPlan>
             <loader id="warehousesDl" readOnly="true">
                 <query>

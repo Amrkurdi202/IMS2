@@ -6,9 +6,6 @@
         <instance id="pointDc"
                   class="com.ghazal.ims2.entity.Point">
             <fetchPlan extends="_base">
-                <property name="name"/>
-                <property name="factor"/>
-                <property name="image"/>
             </fetchPlan>
             <loader/>
         </instance>
@@ -24,8 +21,15 @@
         <formLayout id="form" dataContainer="pointDc">
             <textField id="nameField" property="name" required="true"/>
             <bigDecimalField id="factorField" property="factor"/>
-            <fileUploadField id="imageField" property="image"/>
+            <vbox>
+                <vbox id="photoBox"
+                      spacing="true"
+                      width="100%"
+                      minHeight="320px"/>
+                <fileUploadField id="imageField" property="image"/>
+            </vbox>
         </formLayout>
+
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>

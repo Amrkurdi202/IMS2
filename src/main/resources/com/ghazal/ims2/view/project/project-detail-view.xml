@@ -2,50 +2,77 @@
 <view xmlns="http://jmix.io/schema/flowui/view"
       title="msg://ProjectDetailView.title"
       focusComponent="form">
+
     <data>
         <instance id="projectDc"
                   class="com.ghazal.ims2.entity.Project">
             <fetchPlan extends="_base">
-                <property name="rooms" fetchPlan="_base">
-                </property>
+                <property name="rooms" fetchPlan="_base"/>
             </fetchPlan>
             <loader/>
+            <collection id="roomsDc" property="rooms"/>
         </instance>
-        <collection id="roomsDc"/>
     </data>
+
     <actions>
         <action id="saveAction" type="detail_saveClose"/>
         <action id="closeAction" type="detail_close"/>
     </actions>
+
     <facets>
         <dataLoadCoordinator auto="true"/>
     </facets>
+
     <layout>
         <formLayout id="form" dataContainer="projectDc">
-            <textField id="nameField" property="name" required="true"/>
-            <fileUploadField id="imageField" property="image"/>
+            <vbox>
+                <textField id="nameField" property="name" required="true"/>
+                <vbox id="photoBox"
+                      spacing="true"
+                      width="100%"
+                      minHeight="320px"/>
+                <fileUploadField id="imageField" property="image"/>
+            </vbox>
         </formLayout>
+
         <vbox width="100%">
-            <hbox width="100%">
-                <h3>Rooms</h3>
-                <button id="roomsCreateButton" action="roomsDataGrid.create"/>
-                <button id="roomsEditButton" action="roomsDataGrid.edit"/>
-                <button id="roomsRemoveButton" action="roomsDataGrid.remove"/>
+            <hbox classNames="buttons-panel">
+                <button action="roomsDataGrid.create"/>
+                <button action="roomsDataGrid.edit"/>
+                <button action="roomsDataGrid.remove"/>
             </hbox>
+
             <dataGrid id="roomsDataGrid"
                       width="100%"
                       dataContainer="roomsDc"
+                      editorBuffered="true"
+                      allRowsVisible="true"
                       minHeight="15em">
                 <actions>
-                    <action id="create" type="list_create"/>
-                    <action id="edit" type="list_edit"/>
+                    <action id="create" type="list_create">
+                        <properties>
+                            <property name="openMode" value="DIALOG"/>
+                        </properties>
+                    </action>
+                    <action id="edit" type="list_edit">
+                        <properties>
+                            <property name="openMode" value="DIALOG"/>
+                        </properties>
+                    </action>
                     <action id="remove" type="list_remove"/>
                 </actions>
+
                 <columns>
-                    <column property="name"/>
+                    <column property="name" editable="true"/>
                 </columns>
+                <editorActionsColumn key="bufferedEditorColumn">
+                    <editButton icon="PENCIL"/>
+                    <saveButton icon="CHECK" themeNames="success"/>
+                    <cancelButton icon="CLOSE" themeNames="error"/>
+                </editorActionsColumn>
             </dataGrid>
         </vbox>
+
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>
