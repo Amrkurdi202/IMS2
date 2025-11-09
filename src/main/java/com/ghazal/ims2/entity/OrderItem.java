@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @JmixEntity
-@Entity
+@Entity(name = "ORDER_ITEM")
 @Table(name = "ORDER_ITEM")
 public class OrderItem {
     @Id
@@ -21,6 +21,10 @@ public class OrderItem {
     private Item item;
     @Column(nullable = false)
     private BigDecimal quantity;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
     public OrderItem() {
     }
@@ -54,5 +58,13 @@ public class OrderItem {
 
     public String toString() {
         return "OrderItem(id=" + this.getId() + ", item=" + this.getItem() + ", quantity=" + this.getQuantity() + ")";
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

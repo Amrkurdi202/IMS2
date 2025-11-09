@@ -63,7 +63,6 @@ public class ProjectPoint {
         return "ProjectPoint{" +
                 "id=" + id +
                 ", point=" + point +
-                ", room=" + room +
                 ", quantity=" + quantity +
                 '}';
     }

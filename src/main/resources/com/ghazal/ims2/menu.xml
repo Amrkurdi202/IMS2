@@ -10,7 +10,7 @@
         <item view="Project.list" title="msg://com.ghazal.ims2.view.project/ProjectListView.title"/>
         <item view="Room.list" title="msg://com.ghazal.ims2.view.room/RoomListView.title"/>
         <item view="Point.list" title="msg://com.ghazal.ims2.view.point/PointListView.title"/>
-        <item view="Order.list" title="msg://com.ghazal.ims2.view.order/OrderListView.title"/>
+        <item view="ims_order.list" title="msg://com.ghazal.ims2.view.order/OrderListView.title"/>
     </menu>
 
 </menu-config>

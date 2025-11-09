@@ -1,56 +1,45 @@
 package com.ghazal.ims2.view.point;
 
 import com.ghazal.ims2.entity.Point;
-import com.ghazal.ims2.entity.Point;
+import com.ghazal.ims2.entity.PointRepository;
+import com.ghazal.ims2.view.AutoSaveDetailView;
 import com.ghazal.ims2.view.main.MainView;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
-import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.component.image.JmixImage;
-import io.jmix.flowui.model.InstanceContainer;
+import io.jmix.flowui.component.upload.FileUploadField;
+import io.jmix.flowui.kit.component.button.JmixButton;
+import io.jmix.flowui.kit.component.upload.event.FileUploadSucceededEvent;
 import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.ByteArrayInputStream;
 
 @Route(value = "points/:id", layout = MainView.class)
 @ViewController(id = "Point.detail")
 @ViewDescriptor(path = "point-detail-view.xml")
 @EditedEntityContainer("pointDc")
-public class PointDetailView extends StandardDetailView<Point> {
-
+public class PointDetailView extends AutoSaveDetailView<Point> {
+    
+    @ViewComponent
+    private JmixImage<Object> image;
+    
     @Autowired
-    private UiComponents uiComponents;
+    private PointRepository pointRepository;
 
-    @ViewComponent("photoBox")
-    private com.vaadin.flow.component.orderedlayout.VerticalLayout photoBox;
-
-    @Subscribe
-    public void onBeforeShow(BeforeShowEvent event) {
-        showImage();
+    @Subscribe("imageField")
+    public void onImageFieldFileUploadSucceeded(final FileUploadSucceededEvent<FileUploadField> event) {
+        image.setSrc(
+                new StreamResource(
+                        event.getFileName(),
+                        () -> new ByteArrayInputStream(event.getSource().getValue())
+                )
+        );
     }
 
-    @Subscribe(id = "pointDc", target = Target.DATA_CONTAINER)
-    public void onPointChanged(InstanceContainer.ItemPropertyChangeEvent<Point> event) {
-        if ("image".equals(event.getProperty())) {
-            showImage();
-        }
-    }
-
-    private void showImage() {
-        photoBox.removeAll();
-        Point point = getEditedEntity();
-        byte[] photo = point.getImage();
-        if (photo != null && photo.length > 0) {
-            JmixImage image = uiComponents.create(JmixImage.class);
-            image.setWidth("300px");
-            image.setHeight("300px");
-            image.setSrc(new StreamResource(
-                    "preview.jpg",
-                    () -> new java.io.ByteArrayInputStream(photo)
-            ));
-            photoBox.add(image);
-        } else {
-            photoBox.add(new Span("No image"));
-        }
+    @Subscribe(id = "saveAndCloseButton", subject = "clickListener")
+    public void onSaveAndCloseButtonClick(final ClickEvent<JmixButton> event) {
+        pointRepository.save(getEditedEntity());
     }
 }

@@ -25,13 +25,15 @@
 
     <layout>
         <formLayout id="form" dataContainer="projectDc">
+            <textField id="nameField" property="name" required="true"/>
             <vbox>
-                <textField id="nameField" property="name" required="true"/>
-                <vbox id="photoBox"
-                      spacing="true"
-                      width="100%"
-                      minHeight="320px"/>
-                <fileUploadField id="imageField" property="image"/>
+                <image id="image" property="image" dataContainer="projectDc"/>
+                <fileUploadField
+                        dataContainer="projectDc"
+                        id="imageField"
+                        property="image"
+                        clearButtonVisible="true"
+                        fileNameVisible="true"/>
             </vbox>
         </formLayout>
 

@@ -8,7 +8,6 @@
                   class="com.ghazal.ims2.entity.Room">
             <fetchPlan extends="_base">
                 <property name="points" fetchPlan="_base">
-                    <property name="point" fetchPlan="_instance_name"/>
                 </property>
             </fetchPlan>
             <loader/>
@@ -32,7 +31,7 @@
 
         <vbox width="100%">
             <hbox classNames="buttons-panel">
-                <button action="pointsDataGrid.create"/>
+                <button id="addPointBtn" text="msg://addPoint"/>
                 <button action="pointsDataGrid.edit"/>
                 <button action="pointsDataGrid.remove"/>
             </hbox>
@@ -43,19 +42,22 @@
                       editorBuffered="true"
                       minHeight="15em">
                 <actions>
-                    <action id="create" type="list_create"/>
                     <action id="edit" type="list_edit"/>
                     <action id="remove" type="list_remove"/>
                 </actions>
+
                 <columns>
                     <column property="point" editable="true"/>
                     <column property="quantity" editable="true"/>
+
+                    <editorActionsColumn>
+                        <editButton icon="PENCIL"/>
+                        <saveButton icon="CHECK" themeNames="success"/>
+                        <cancelButton icon="CLOSE" themeNames="error"/>
+                    </editorActionsColumn>
                 </columns>
-                <editorActionsColumn key="editor">
-                    <editButton icon="PENCIL"/>
-                    <saveButton icon="CHECK" themeNames="success"/>
-                    <cancelButton icon="CLOSE" themeNames="error"/>
-                </editorActionsColumn>
+
+
             </dataGrid>
         </vbox>
 

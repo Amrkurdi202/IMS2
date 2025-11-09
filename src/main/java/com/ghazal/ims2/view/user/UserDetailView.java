@@ -2,14 +2,17 @@ package com.ghazal.ims2.view.user;
 
 import com.ghazal.ims2.entity.User;
 import com.ghazal.ims2.view.main.MainView;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.router.Route;
+import io.jmix.core.DataManager;
 import io.jmix.core.EntityStates;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.component.textfield.TypedTextField;
+import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,6 +44,8 @@ public class UserDetailView extends StandardDetailView<User> {
     private EntityStates entityStates;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private DataManager dataManager;
 
     private boolean newEntity;
 
@@ -75,9 +80,13 @@ public class UserDetailView extends StandardDetailView<User> {
     public void onBeforeSave(final BeforeSaveEvent event) {
         if (entityStates.isNew(getEditedEntity())) {
             getEditedEntity().setPassword(passwordEncoder.encode(passwordField.getValue()));
-
             newEntity = true;
         }
+    }
+
+    @Subscribe(id = "saveAndCloseButton", subject = "clickListener")
+    public void onSaveAndCloseButtonClick(final ClickEvent<JmixButton> event) {
+        dataManager.save(getEditedEntity());
     }
 
     @Subscribe

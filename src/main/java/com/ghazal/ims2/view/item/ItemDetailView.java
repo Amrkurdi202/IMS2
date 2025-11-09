@@ -2,6 +2,7 @@ package com.ghazal.ims2.view.item;
 
 import com.ghazal.ims2.entity.Item;
 import com.ghazal.ims2.entity.ItemRepository;
+import com.ghazal.ims2.view.AutoSaveDetailView;
 import com.ghazal.ims2.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.router.Route;
@@ -18,7 +19,7 @@ import java.io.ByteArrayInputStream;
 @ViewController(id = "Item.detail")
 @ViewDescriptor(path = "item-detail-view.xml")
 @EditedEntityContainer("itemDc")
-public class ItemDetailView extends StandardDetailView<Item> {
+public class ItemDetailView extends AutoSaveDetailView<Item> {
     @ViewComponent
     private JmixImage<Object> image;
     @Autowired

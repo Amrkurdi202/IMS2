@@ -51,6 +51,6 @@ public class Point extends BaseEntity {
     }
 
     public String toString() {
-        return "Point(name=" + this.getName() + ", image=" + java.util.Arrays.toString(this.getImage()) + ", factor=" + this.getFactor() + ")";
+        return "Point(name=" + this.getName() + ")";
     }
 }
