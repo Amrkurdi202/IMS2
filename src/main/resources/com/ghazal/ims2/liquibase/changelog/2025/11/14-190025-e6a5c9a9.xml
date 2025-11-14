@@ -6,35 +6,57 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
     <changeSet id="1" author="IMS2">
+        <createTable tableName="ATTENDANCE_DAY">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ATTENDANCE_DAY"/>
+            </column>
+            <column name="USER_ID" type="UUID"/>
+            <column name="day_" type="DATE"/>
+            <column name="caption" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="IMS2">
+        <createTable tableName="ATTENDANCE_RECORD">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ATTENDANCE_RECORD"/>
+            </column>
+            <column name="DAY_ID" type="UUID"/>
+            <column name="ACTION" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TIME" type="TIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="IMS2">
         <createTable tableName="ITEM">
             <column name="ID" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ITEM"/>
             </column>
             <column name="UUID" type="UUID"/>
             <column name="CREATED_BY" type="VARCHAR(255)"/>
-            <column name="CREATED_DATE" type="datetime(6)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
             <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
-            <column name="LAST_MODIFIED_DATE" type="datetime(6)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
             <column name="DELETED_BY" type="VARCHAR(255)"/>
-            <column name="DELETED_DATE" type="datetime(6)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="image" type="BLOB"/>
+            <column name="image" type="LONGBLOB"/>
         </createTable>
     </changeSet>
-    <changeSet id="2" author="IMS2">
+    <changeSet id="4" author="IMS2">
         <createTable tableName="ITEM_UNIT_PRICE">
             <column name="ID" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ITEM_UNIT_PRICE"/>
             </column>
             <column name="UUID" type="UUID"/>
             <column name="CREATED_BY" type="VARCHAR(255)"/>
-            <column name="CREATED_DATE" type="datetime(6)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
             <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
-            <column name="LAST_MODIFIED_DATE" type="datetime(6)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
             <column name="DELETED_BY" type="VARCHAR(255)"/>
-            <column name="DELETED_DATE" type="datetime(6)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
             <column name="ITEM_ID" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -49,24 +71,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="3" author="IMS2">
-        <createTable tableName="ORDER">
-            <column name="ID" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ORDER"/>
-            </column>
-            <column name="UUID" type="UUID"/>
-            <column name="CREATED_BY" type="VARCHAR(255)"/>
-            <column name="CREATED_DATE" type="datetime(6)"/>
-            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
-            <column name="LAST_MODIFIED_DATE" type="datetime(6)"/>
-            <column name="DELETED_BY" type="VARCHAR(255)"/>
-            <column name="DELETED_DATE" type="datetime(6)"/>
-            <column name="USER_ID" type="UUID"/>
-            <column name="warehouse_ID" type="BIGINT"/>
-            <column name="project_ID" type="BIGINT"/>
-        </createTable>
-    </changeSet>
-    <changeSet id="4" author="IMS2">
+    <changeSet id="5" author="IMS2">
         <createTable tableName="ORDER_ITEM">
             <column autoIncrement="true" name="id" startWith="1" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ORDER_ITEM"/>
@@ -77,14 +82,7 @@
             <column name="quantity" type="DECIMAL">
                 <constraints nullable="false"/>
             </column>
-        </createTable>
-    </changeSet>
-    <changeSet id="5" author="IMS2">
-        <createTable tableName="ORDER_items">
-            <column name="Order_ID" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="items_id" type="BIGINT">
+            <column name="order_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -96,15 +94,15 @@
             </column>
             <column name="UUID" type="UUID"/>
             <column name="CREATED_BY" type="VARCHAR(255)"/>
-            <column name="CREATED_DATE" type="datetime(6)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
             <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
-            <column name="LAST_MODIFIED_DATE" type="datetime(6)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
             <column name="DELETED_BY" type="VARCHAR(255)"/>
-            <column name="DELETED_DATE" type="datetime(6)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="image" type="BLOB"/>
+            <column name="image" type="LONGBLOB"/>
             <column name="factor" type="DECIMAL"/>
         </createTable>
     </changeSet>
@@ -115,15 +113,15 @@
             </column>
             <column name="UUID" type="UUID"/>
             <column name="CREATED_BY" type="VARCHAR(255)"/>
-            <column name="CREATED_DATE" type="datetime(6)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
             <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
-            <column name="LAST_MODIFIED_DATE" type="datetime(6)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
             <column name="DELETED_BY" type="VARCHAR(255)"/>
-            <column name="DELETED_DATE" type="datetime(6)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="image" type="BLOB"/>
+            <column name="image" type="LONGBLOB"/>
         </createTable>
     </changeSet>
     <changeSet id="8" author="IMS2">
@@ -134,158 +132,152 @@
             <column name="point_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
+            <column name="room_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
             <column name="quantity" type="DECIMAL">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet id="9" author="IMS2">
-        <createTable tableName="PROJECT_rooms">
-            <column name="Project_ID" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="rooms_ID" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet id="10" author="IMS2">
         <createTable tableName="ROOM">
             <column name="ID" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ROOM"/>
             </column>
             <column name="UUID" type="UUID"/>
             <column name="CREATED_BY" type="VARCHAR(255)"/>
-            <column name="CREATED_DATE" type="datetime(6)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
             <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
-            <column name="LAST_MODIFIED_DATE" type="datetime(6)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
             <column name="DELETED_BY" type="VARCHAR(255)"/>
-            <column name="DELETED_DATE" type="datetime(6)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-        </createTable>
-    </changeSet>
-    <changeSet id="11" author="IMS2">
-        <createTable tableName="ROOM_points">
-            <column name="Room_ID" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="points_id" type="BIGINT">
+            <column name="project_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="12" author="IMS2">
+    <changeSet id="10" author="IMS2">
         <createTable tableName="UNIT">
             <column name="ID" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK_UNIT"/>
             </column>
             <column name="UUID" type="UUID"/>
             <column name="CREATED_BY" type="VARCHAR(255)"/>
-            <column name="CREATED_DATE" type="datetime(6)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
             <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
-            <column name="LAST_MODIFIED_DATE" type="datetime(6)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
             <column name="DELETED_BY" type="VARCHAR(255)"/>
-            <column name="DELETED_DATE" type="datetime(6)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
             <column name="NAME" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="13" author="IMS2">
+    <changeSet id="11" author="IMS2">
         <createTable tableName="WAREHOUSE">
             <column name="ID" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK_WAREHOUSE"/>
             </column>
             <column name="UUID" type="UUID"/>
             <column name="CREATED_BY" type="VARCHAR(255)"/>
-            <column name="CREATED_DATE" type="datetime(6)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
             <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
-            <column name="LAST_MODIFIED_DATE" type="datetime(6)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
             <column name="DELETED_BY" type="VARCHAR(255)"/>
-            <column name="DELETED_DATE" type="datetime(6)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="image" type="BLOB"/>
+            <column name="image" type="LONGBLOB"/>
         </createTable>
     </changeSet>
+    <changeSet id="12" author="IMS2">
+        <createTable tableName="ims_Order">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_IMS_ORDER"/>
+            </column>
+            <column name="UUID" type="UUID"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="DELETED_BY" type="VARCHAR(255)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
+            <column name="USER_ID" type="UUID"/>
+            <column name="warehouse_ID" type="BIGINT"/>
+            <column name="project_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="13" author="IMS2">
+        <addUniqueConstraint columnNames="USER_ID" constraintName="uc_8793ef5f1b010a26ddcaa93df"
+                             tableName="ATTENDANCE_DAY"/>
+    </changeSet>
     <changeSet id="14" author="IMS2">
-        <addUniqueConstraint columnNames="items_id" constraintName="UC_ORDER_ITEMS_ITEMS" tableName="ORDER_items"/>
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="ATTENDANCE_DAY"
+                                 constraintName="FK_ATTENDANCE_DAY_ON_USER" referencedColumnNames="ID"
+                                 referencedTableName="USER_"/>
     </changeSet>
     <changeSet id="15" author="IMS2">
-        <addUniqueConstraint columnNames="rooms_ID" constraintName="UC_PROJECT_ROOMS_ROOMS" tableName="PROJECT_rooms"/>
+        <addForeignKeyConstraint baseColumnNames="DAY_ID" baseTableName="ATTENDANCE_RECORD"
+                                 constraintName="FK_ATTENDANCE_RECORD_ON_DAY" referencedColumnNames="id"
+                                 referencedTableName="ATTENDANCE_DAY"/>
     </changeSet>
     <changeSet id="16" author="IMS2">
-        <addUniqueConstraint columnNames="points_id" constraintName="UC_ROOM_POINTS_POINTS" tableName="ROOM_points"/>
+        <addForeignKeyConstraint baseColumnNames="project_ID" baseTableName="ims_Order"
+                                 constraintName="FK_IMS_ORDER_ON_PROJECT" referencedColumnNames="ID"
+                                 referencedTableName="PROJECT"/>
     </changeSet>
     <changeSet id="17" author="IMS2">
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="ims_Order"
+                                 constraintName="FK_IMS_ORDER_ON_USER" referencedColumnNames="ID"
+                                 referencedTableName="USER_"/>
+    </changeSet>
+    <changeSet id="18" author="IMS2">
+        <addForeignKeyConstraint baseColumnNames="warehouse_ID" baseTableName="ims_Order"
+                                 constraintName="FK_IMS_ORDER_ON_WAREHOUSE" referencedColumnNames="ID"
+                                 referencedTableName="WAREHOUSE"/>
+    </changeSet>
+    <changeSet id="19" author="IMS2">
         <addForeignKeyConstraint baseColumnNames="ITEM_ID" baseTableName="ITEM_UNIT_PRICE"
                                  constraintName="FK_ITEM_UNIT_PRICE_ON_ITEM" referencedColumnNames="ID"
                                  referencedTableName="ITEM"/>
     </changeSet>
-    <changeSet id="18" author="IMS2">
+    <changeSet id="20" author="IMS2">
         <addForeignKeyConstraint baseColumnNames="UNIT_ID" baseTableName="ITEM_UNIT_PRICE"
                                  constraintName="FK_ITEM_UNIT_PRICE_ON_UNIT" referencedColumnNames="ID"
                                  referencedTableName="UNIT"/>
     </changeSet>
-    <changeSet id="19" author="IMS2">
+    <changeSet id="21" author="IMS2">
         <addForeignKeyConstraint baseColumnNames="WAREHOUSE_ID" baseTableName="ITEM_UNIT_PRICE"
                                  constraintName="FK_ITEM_UNIT_PRICE_ON_WAREHOUSE" referencedColumnNames="ID"
                                  referencedTableName="WAREHOUSE"/>
     </changeSet>
-    <changeSet id="20" author="IMS2">
+    <changeSet id="22" author="IMS2">
         <addForeignKeyConstraint baseColumnNames="item_id" baseTableName="ORDER_ITEM"
                                  constraintName="FK_ORDER_ITEM_ON_ITEM" referencedColumnNames="ID"
                                  referencedTableName="ITEM"/>
     </changeSet>
-    <changeSet id="21" author="IMS2">
-        <addForeignKeyConstraint baseColumnNames="project_ID" baseTableName="ORDER" constraintName="FK_ORDER_ON_PROJECT"
-                                 referencedColumnNames="ID" referencedTableName="PROJECT"/>
-    </changeSet>
-    <changeSet id="22" author="IMS2">
-        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="ORDER" constraintName="FK_ORDER_ON_USER"
-                                 referencedColumnNames="ID" referencedTableName="USER_"/>
-    </changeSet>
     <changeSet id="23" author="IMS2">
-        <addForeignKeyConstraint baseColumnNames="warehouse_ID" baseTableName="ORDER"
-                                 constraintName="FK_ORDER_ON_WAREHOUSE" referencedColumnNames="ID"
-                                 referencedTableName="WAREHOUSE"/>
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="ORDER_ITEM"
+                                 constraintName="FK_ORDER_ITEM_ON_ORDER" referencedColumnNames="ID"
+                                 referencedTableName="ims_Order"/>
     </changeSet>
     <changeSet id="24" author="IMS2">
-        <addForeignKeyConstraint baseColumnNames="Order_ID" baseTableName="ORDER_items"
-                                 constraintName="FK_ORDITE_ON_ORDER" referencedColumnNames="ID"
-                                 referencedTableName="ORDER"/>
-    </changeSet>
-    <changeSet id="25" author="IMS2">
-        <addForeignKeyConstraint baseColumnNames="items_id" baseTableName="ORDER_items"
-                                 constraintName="FK_ORDITE_ON_ORDER_ITEM" referencedColumnNames="id"
-                                 referencedTableName="ORDER_ITEM"/>
-    </changeSet>
-    <changeSet id="26" author="IMS2">
         <addForeignKeyConstraint baseColumnNames="point_id" baseTableName="PROJECT_POINT"
                                  constraintName="FK_PROJECT_POINT_ON_POINT" referencedColumnNames="ID"
                                  referencedTableName="POINT"/>
     </changeSet>
-    <changeSet id="27" author="IMS2">
-        <addForeignKeyConstraint baseColumnNames="Project_ID" baseTableName="PROJECT_rooms"
-                                 constraintName="FK_PROROO_ON_PROJECT" referencedColumnNames="ID"
-                                 referencedTableName="PROJECT"/>
-    </changeSet>
-    <changeSet id="28" author="IMS2">
-        <addForeignKeyConstraint baseColumnNames="rooms_ID" baseTableName="PROJECT_rooms"
-                                 constraintName="FK_PROROO_ON_ROOM" referencedColumnNames="ID"
+    <changeSet id="25" author="IMS2">
+        <addForeignKeyConstraint baseColumnNames="room_id" baseTableName="PROJECT_POINT"
+                                 constraintName="FK_PROJECT_POINT_ON_ROOM" referencedColumnNames="ID"
                                  referencedTableName="ROOM"/>
     </changeSet>
-    <changeSet id="29" author="IMS2">
-        <addForeignKeyConstraint baseColumnNames="points_id" baseTableName="ROOM_points"
-                                 constraintName="FK_ROOPOI_ON_PROJECT_POINT" referencedColumnNames="id"
-                                 referencedTableName="PROJECT_POINT"/>
-    </changeSet>
-    <changeSet id="30" author="IMS2">
-        <addForeignKeyConstraint baseColumnNames="Room_ID" baseTableName="ROOM_points"
-                                 constraintName="FK_ROOPOI_ON_ROOM" referencedColumnNames="ID"
-                                 referencedTableName="ROOM"/>
+    <changeSet id="26" author="IMS2">
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="ROOM" constraintName="FK_ROOM_ON_PROJECT"
+                                 referencedColumnNames="ID" referencedTableName="PROJECT"/>
     </changeSet>
 </databaseChangeLog>

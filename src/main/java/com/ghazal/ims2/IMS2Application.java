@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -22,6 +23,8 @@ import javax.sql.DataSource;
 @Push
 @Theme(value = "IMS2")
 @SpringBootApplication
+@EntityScan("com.ghazal.ims2.entity") // ✅ Add this line
+
 public class IMS2Application implements AppShellConfigurator {
 
     @Autowired
