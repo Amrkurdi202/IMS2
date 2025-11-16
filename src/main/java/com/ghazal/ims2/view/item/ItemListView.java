@@ -25,7 +25,7 @@ public class ItemListView extends StandardListView<Item> {
     private UiComponents uiComponents;
 
     @Subscribe
-    public void onInit(InitEvent event) {
+    public void onInit(InitEvent event) { //test
         itemDataGrid.addComponentColumn(item -> {
                     byte[] photo = item.getImage();
                     if (photo != null && photo.length > 0) {
