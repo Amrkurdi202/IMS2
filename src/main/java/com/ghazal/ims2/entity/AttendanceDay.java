@@ -11,7 +11,7 @@ import java.util.UUID;
 @JmixEntity
 @Entity
 @Table(name = "ATTENDANCE_DAY",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "DAY"}))
+        uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "DAY_"}))
 public class AttendanceDay {
 
     @Id
@@ -22,6 +22,7 @@ public class AttendanceDay {
     @JoinColumn(name = "USER_ID")
     private User user;
 
+    @Column(name = "DAY_")
     private LocalDate day;
 
     @InstanceName

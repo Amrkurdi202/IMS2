@@ -9,6 +9,7 @@ import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.component.image.JmixImage;
 import io.jmix.flowui.view.*;
+import io.jmix.security.role.annotation.ResourceRole;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "items", layout = MainView.class)

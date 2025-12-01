@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="Attendance Days Report"
+      focusComponent="reportTable">
+
+    <data>
+        <!-- Key-value collection for the report rows -->
+        <keyValueCollection id="reportDc">
+            <properties>
+                <!-- Employee -->
+                <property name="user" class="com.ghazal.ims2.entity.User"/>
+
+                <!-- Total attendance days -->
+                <property name="daysCount" class="java.lang.Long"/>
+            </properties>
+
+            <loader id="reportDl">
+                <query>
+                    <![CDATA[
+                        select d.user as user,
+                               count(d) as daysCount
+                        from AttendanceDay d
+                        where d.day between :fromDate and :toDate
+                        group by d.user
+                        order by d.user.username
+                    ]]>
+                </query>
+            </loader>
+        </keyValueCollection>
+    </data>
+
+    <layout>
+        <vbox width="100%" spacing="true">
+
+            <!-- Filters -->
+            <formLayout id="filtersForm" responsiveSteps="1, 200px">
+                <datePicker id="fromDateField"
+                            label="From date"/>
+                <datePicker id="toDateField"
+                            label="To date"/>
+                <button id="generateBtn"
+                        text="Generate report"/>
+            </formLayout>
+
+            <!-- Result table -->
+            <dataGrid id="reportTable"
+                      width="100%"
+                      dataContainer="reportDc">
+                <columns>
+                    <column property="user" header="Employee"/>
+                    <column property="daysCount" header="Total days"/>
+                </columns>
+            </dataGrid>
+
+        </vbox>
+    </layout>
+</view>

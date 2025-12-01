@@ -8,14 +8,23 @@ public enum AttendanceAction implements EnumClass<String> {
     BREAK("BREAK"),
     BREAK_END("BREAK_END");
 
-
     private final String id;
+
     AttendanceAction(String id) {
         this.id = id;
     }
 
     @Override
     public String getId() {
-        return "";
+        return id; //
+    }
+
+    public static AttendanceAction fromId(String id) {
+        for (AttendanceAction action : AttendanceAction.values()) {
+            if (action.id.equals(id)) {
+                return action;
+            }
+        }
+        return null;
     }
 }

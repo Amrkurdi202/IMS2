@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="Project Cost Report"
+      focusComponent="generateBtn">
+
+    <data>
+        <collection id="projectsDc"
+                    class="com.ghazal.ims2.entity.Project">
+            <loader id="projectsDl">
+                <query><![CDATA[
+                    select p from Project p order by p.name
+                ]]></query>
+            </loader>
+        </collection>
+
+        <collection id="warehousesDc"
+                    class="com.ghazal.ims2.entity.Warehouse">
+            <loader id="warehousesDl">
+                <query><![CDATA[
+                    select w from Warehouse w order by w.name
+                ]]></query>
+            </loader>
+        </collection>
+    </data>
+
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+
+    <layout>
+        <vbox padding="24px" spacing="16px">
+            <formLayout responsiveSteps="1, 2, 400px">
+                <datePicker id="fromDateField" label="From date"/>
+                <datePicker id="toDateField" label="To date"/>
+
+                <!-- 👇 added metaClass and kept itemsContainer -->
+                <entityComboBox id="projectField"
+                                label="Project"
+                                metaClass="Project"
+                                itemsContainer="projectsDc"
+                                itemLabelGenerator="name"/>
+
+                <entityComboBox id="warehouseField"
+                                label="Warehouse (optional)"
+                                metaClass="Warehouse"
+                                itemsContainer="warehousesDc"
+                                itemLabelGenerator="name"
+                                clearButtonVisible="true"/>
+
+                <numberField id="pointValueField"
+                             label="Point value (price per point)"
+                             step="1"
+                             required="true"/>
+            </formLayout>
+
+            <button id="generateBtn"
+                    text="Generate report"
+                    onClick="onGenerateBtnClick"/>
+
+            <hbox spacing="24px">
+                <label id="totalPointsLabel" text="Total points: -"/>
+                <label id="pointsCostLabel" text="Points cost: -"/>
+                <label id="clientAmountLabel" text="Client amount: -"/>
+            </hbox>
+        </vbox>
+    </layout>
+</view>

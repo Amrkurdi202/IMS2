@@ -11,7 +11,7 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ATTENDANCE_DAY"/>
             </column>
             <column name="USER_ID" type="UUID"/>
-            <column name="day_" type="DATE"/>
+            <column name="DAY_" type="DATE"/>
             <column name="caption" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
@@ -82,6 +82,7 @@
             <column name="quantity" type="DECIMAL">
                 <constraints nullable="false"/>
             </column>
+            <column name="UNIT_PRICE_AT_ORDER" type="DECIMAL(20, 2)"/>
             <column name="order_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -213,7 +214,7 @@
         </createTable>
     </changeSet>
     <changeSet id="13" author="IMS2">
-        <addUniqueConstraint columnNames="USER_ID" constraintName="uc_8793ef5f1b010a26ddcaa93df"
+        <addUniqueConstraint columnNames="USER_ID, DAY_" constraintName="uc_1666c833bf9e8ffe71dc7af59"
                              tableName="ATTENDANCE_DAY"/>
     </changeSet>
     <changeSet id="14" author="IMS2">
