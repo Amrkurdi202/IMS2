@@ -57,11 +57,12 @@
                     text="Generate report"
                     onClick="onGenerateBtnClick"/>
 
-            <hbox spacing="24px">
-                <label id="totalPointsLabel" text="Total points: -"/>
-                <label id="pointsCostLabel" text="Points cost: -"/>
-                <label id="clientAmountLabel" text="Client amount: -"/>
+            <hbox spacing="24px" justifyContent="AROUND" width="30%">
+                <span id="totalPointsLabel" text="Total points: -" />
+                <span id="pointsCostLabel" text="Points cost: -" />
+                <span id="clientAmountLabel" text="Client amount: -" />
             </hbox>
+
         </vbox>
     </layout>
 </view>

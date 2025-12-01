@@ -13,7 +13,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Component
@@ -27,8 +27,8 @@ public class ProjectCostReportService {
 
     public ProjectCostReportResult calculateProjectCost(
             Project project,
-            LocalDate fromDate,
-            LocalDate toDate,
+            OffsetDateTime fromDate,
+            OffsetDateTime toDate,
             @Nullable Warehouse warehouse,
             BigDecimal pointValue
     ) {
@@ -66,8 +66,8 @@ public class ProjectCostReportService {
         StringBuilder jpql = new StringBuilder(
                 "select o from ims_Order o " +
                         "where o.project = :project " +
-                        "and o.date >= :fromDate " +
-                        "and o.date <= :toDate"
+                        "and o.createdDate >= :fromDate " +
+                        "and o.createdDate <= :toDate"
         );
 
         if (warehouse != null) {

@@ -8,7 +8,7 @@ import com.ghazal.ims2.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.router.Route;
@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 @Route(value = "project-cost-report", layout = MainView.class)
 @ViewController("ProjectCostReportView")
@@ -40,13 +43,13 @@ public class ProjectCostReportView extends StandardView {
     private NumberField pointValueField;
 
     @ViewComponent
-    private Label totalPointsLabel;
+    private Span totalPointsLabel;
 
     @ViewComponent
-    private Label pointsCostLabel;
+    private Span pointsCostLabel;
 
     @ViewComponent
-    private Label clientAmountLabel;
+    private Span clientAmountLabel;
 
     @Autowired
     private ProjectCostReportService reportService;
@@ -67,8 +70,10 @@ public class ProjectCostReportView extends StandardView {
 
         BigDecimal pointValue = BigDecimal.valueOf(pointValDouble);
 
+        OffsetDateTime offsetFrom = from.atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime();
+        OffsetDateTime offsetTo = to.atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime();
         ProjectCostReportResult result = reportService.calculateProjectCost(
-                project, from, to, warehouse, pointValue
+                project, offsetFrom, offsetTo, warehouse, pointValue
         );
 
         totalPointsLabel.setText("Total points: " + result.getTotalPoints());
