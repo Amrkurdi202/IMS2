@@ -2,24 +2,24 @@ package com.ghazal.ims2.view.order;
 
 import com.ghazal.ims2.entity.Order;
 import com.ghazal.ims2.entity.OrderItem;
+import com.ghazal.ims2.entity.User;
 import com.ghazal.ims2.view.AutoSaveDetailView;
 import com.ghazal.ims2.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.router.Route;
+import io.jmix.core.DataManager;
 import io.jmix.core.Metadata;
+import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.model.CollectionContainer;
 import io.jmix.flowui.view.EditedEntityContainer;
+import io.jmix.flowui.view.StandardDetailView.InitEntityEvent;
 import io.jmix.flowui.view.Subscribe;
 import io.jmix.flowui.view.ViewComponent;
 import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
-import com.ghazal.ims2.entity.User;
-import io.jmix.core.DataManager;
-import io.jmix.core.security.CurrentAuthentication;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
@@ -55,28 +55,32 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
     @ViewComponent
     private JmixButton qtyPlusBtn;
 
-
+    // -----------------------------------------------------
+    // 1) Auto-fill user when creating a NEW order
+    // -----------------------------------------------------
     @Subscribe
     public void onInitEntity(InitEntityEvent<Order> event) {
-        // 1) If the authenticated user IS your app User entity, just cast it
         Object authUser = currentAuthentication.getUser();
+
+        // Case 1: security user IS your app User entity
         if (authUser instanceof User appUser) {
             event.getEntity().setUser(appUser);
             return;
         }
 
-        // 2) Otherwise, fall back to DB lookup by username – but safely
+        // Case 2: find User by username, but safely (no exception)
         String username = currentAuthentication.getUser().getUsername();
 
         dataManager.load(User.class)
                 .query("select u from User u where u.username = :username")
                 .parameter("username", username)
-                .optional()                      // <-- instead of .one()
+                .optional()
                 .ifPresent(event.getEntity()::setUser);
     }
 
-    // ---------- Add item ----------
-
+    // -----------------------------------------------------
+    // 2) Add item (inline editor)
+    // -----------------------------------------------------
     @Subscribe(id = "addItemBtn", subject = "clickListener")
     public void onAddItemBtnClick(ClickEvent<JmixButton> event) {
         OrderItem line = metadata.create(OrderItem.class);
@@ -88,8 +92,9 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
         itemsDataGrid.getEditor().editItem(line);
     }
 
-    // ---------- Qty +/- on selected row ----------
-
+    // -----------------------------------------------------
+    // 3) Qty +/- on selected row (no more reset, skip custom)
+    // -----------------------------------------------------
     @Subscribe(id = "qtyMinusBtn", subject = "clickListener")
     public void onQtyMinusBtnClick(ClickEvent<JmixButton> event) {
         adjustSelectedQuantity(-1);
@@ -101,15 +106,20 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
     }
 
     private void adjustSelectedQuantity(int delta) {
+        // Save any open editor row first so we don't lose typed values
+        if (itemsDataGrid.getEditor().isOpen()) {
+            itemsDataGrid.getEditor().save();
+        }
+
         OrderItem selected = itemsDataGrid.getSingleSelectedItem();
         if (selected == null) {
             notifications.show("Select an item first");
             return;
         }
 
-        // Do NOT change custom items with these buttons
+        // 🚫 Do not use +/- for custom items
         if (Boolean.TRUE.equals(selected.getCustomItem())) {
-            notifications.show("For custom items, change the Qty/Price value directly.");
+            notifications.show("For custom items, change the Qty/Price value directly in the cell.");
             return;
         }
 
@@ -120,12 +130,13 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
         q = q.add(BigDecimal.valueOf(delta));   // can go negative (returns)
         selected.setQuantity(q);
 
-        // refresh grid display
-        itemsDataGrid.getDataProvider().refreshAll();
+        // Refresh only this row
+        itemsDataGrid.getDataProvider().refreshItem(selected);
     }
 
-    // ---------- Save & close ----------
-
+    // -----------------------------------------------------
+    // 4) Save & close
+    // -----------------------------------------------------
     @Subscribe(id = "saveAndCloseButton", subject = "clickListener")
     public void onSaveAndCloseButtonClick(ClickEvent<JmixButton> event) {
         if (itemsDataGrid.getEditor().isOpen()) {
@@ -134,5 +145,4 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
         getViewData().getDataContext().save();
         closeWithSave();
     }
-
 }

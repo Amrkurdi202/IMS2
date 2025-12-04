@@ -24,9 +24,10 @@
                   dataContainer="attendanceDc">
             <columns>
                 <column property="action"/>
-                <column property="time"/>
+                <column property="time12h" header="Time"/>
             </columns>
         </dataGrid>
+
     </layout>
 
 

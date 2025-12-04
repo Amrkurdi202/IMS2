@@ -9,7 +9,12 @@
             <fetchPlan extends="_base">
                 <property name="warehouse" fetchPlan="_base"/>
                 <property name="project" fetchPlan="_base"/>
-                <property name="items" fetchPlan="_base"/>
+                <!-- 🔹 Make sure items + item.image are loaded -->
+                <property name="items">
+                    <property name="item">
+                        <property name="image"/>
+                    </property>
+                </property>
             </fetchPlan>
             <loader/>
             <collection id="itemsDc" property="items"/>
@@ -29,98 +34,92 @@
 
         <!-- Top form: user / warehouse / project -->
         <formLayout id="form" dataContainer="orderDc">
-            <entityPicker id="userField"
-                          property="user"
-                          readOnly="true">
+            <entityPicker id="userField" property="user">
                 <actions>
                     <action id="lookup" type="entity_lookup"/>
                     <action id="clear" type="entity_clear"/>
                 </actions>
             </entityPicker>
 
-
-            <entityPicker id="warehouseField"
-                          property="warehouse"
-                          required="true"
-                          requiredMessage="Warehouse is required">
+            <entityPicker id="warehouseField" property="warehouse">
                 <actions>
                     <action id="lookup" type="entity_lookup"/>
                     <action id="clear" type="entity_clear"/>
                 </actions>
             </entityPicker>
 
-            <entityPicker id="projectField"
-                          property="project"
-                          required="true"
-                          requiredMessage="Project is required">
+            <entityPicker id="projectField" property="project">
                 <actions>
                     <action id="lookup" type="entity_lookup"/>
                     <action id="clear" type="entity_clear"/>
                 </actions>
             </entityPicker>
-
         </formLayout>
 
-        <vbox width="100%">
+        <!-- 🔹 Split area: left = items grid, right = big image preview -->
+        <hbox width="100%" spacing="true">
 
-            <!-- Buttons for managing order lines -->
-            <hbox classNames="buttons-panel">
-                <button id="addItemBtn" text="Add item"/>
+            <!-- LEFT: existing buttons + grid -->
+            <vbox width="70%">
 
-
-            </hbox>
-            <hbox id="qtyActions">
-                <button id="qtyMinusBtn"
-                        text="Qty -">
-
-                </button>
+                <!-- Buttons for managing order lines -->
+                <hbox classNames="buttons-panel">
+                    <button id="addItemBtn" text="Add item"/>
+                    <button id="addItemFromGalleryBtn" text="Add from gallery"/>
+                </hbox>
 
 
-                <button id="qtyPlusBtn"
-                        text="Qty +">
-                /button>
-                </button>
+                <hbox id="qtyActions">
+                    <button id="qtyMinusBtn" text="Qty -"/>
+                    <button id="qtyPlusBtn" text="Qty +"/>
+                </hbox>
 
-            </hbox>
+                <!-- Items grid: ONLY simple property columns -->
+                <dataGrid id="itemsDataGrid"
+                          width="100%"
+                          dataContainer="itemsDc"
+                          editorBuffered="true"
+                          minHeight="15em">
 
+                    <actions>
+                        <action id="create" type="list_create"/>
+                        <action id="edit" type="list_edit"/>
+                        <action id="remove" type="list_remove"/>
+                    </actions>
 
-            <!-- Items grid: ONLY simple property columns -->
-            <dataGrid id="itemsDataGrid"
-                      width="100%"
-                      dataContainer="itemsDc"
-                      editorBuffered="true"
-                      minHeight="15em">
+                    <columns>
+                        <!-- Normal catalog item -->
+                        <column property="item" editable="true"/>
 
-                <actions>
-                    <action id="create" type="list_create"/>
-                    <action id="edit" type="list_edit"/>
-                    <action id="remove" type="list_remove"/>
-                </actions>
+                        <!-- Is this a custom ad-hoc item? -->
+                        <column property="customItem" header="Custom?" editable="true"/>
 
-                <columns>
-                    <!-- Normal catalog item -->
-                    <column property="item" editable="true"/>
+                        <!-- Free text name when customItem = true -->
+                        <column property="customName" header="Custom name" editable="true"/>
 
-                    <!-- Is this a custom ad-hoc item? -->
-                    <column property="customItem" header="Custom?" editable="true"/>
+                        <!-- Quantity (for normal items) or price (for custom items) -->
+                        <column property="quantity" header="Qty / Price" editable="true"/>
 
-                    <!-- Free text name when customItem = true -->
-                    <column property="customName" header="Custom name" editable="true"/>
+                        <editorActionsColumn>
+                            <editButton icon="PENCIL"/>
+                            <saveButton icon="CHECK" themeNames="success"/>
+                            <cancelButton icon="CLOSE" themeNames="error"/>
+                        </editorActionsColumn>
+                    </columns>
+                </dataGrid>
+            </vbox>
 
-                    <!-- Quantity (for normal items) or price (for custom items) -->
-                    <column property="quantity" header="Qty / Price" editable="true"/>
+            <!-- RIGHT: big preview of selected item's image -->
+            <vbox width="30%">
+                <label text="Item photo preview"/>
+                <!-- 🔹 This binds to the selected row's item.image -->
+                <image id="itemPreview"
+                       dataContainer="itemsDc"
+                       property="item.image"
+                       classNames="order-item-preview"/>
+            </vbox>
 
-                    <!-- We dropped the generated Qty +/- column to keep things stable -->
-                    <editorActionsColumn>
-                        <editButton icon="PENCIL"/>
-                        <saveButton icon="CHECK" themeNames="success"/>
-                        <cancelButton icon="CLOSE" themeNames="error"/>
-                    </editorActionsColumn>
-                </columns>
-            </dataGrid>
-
-
-        </vbox>
+        </hbox>
 
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>

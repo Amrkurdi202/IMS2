@@ -20,14 +20,23 @@
     <layout>
         <formLayout id="form" dataContainer="itemDc">
             <vbox>
-                <textField id="nameField" property="name" required="true" dataContainer="itemDc"/>
-                <image id="image" property="image" dataContainer="itemDc"/>
+                <textField id="nameField"
+                           property="name"
+                           required="true"
+                           dataContainer="itemDc"/>
+
+                <!-- 🔹 Image now has size-limiting CSS class -->
+                <image id="image"
+                       property="image"
+                       dataContainer="itemDc"
+                       classNames="app-image"/>
+
                 <fileUploadField
-                        dataContainer="itemDc"
                         id="imageField"
-                                 property="image"
-                                 clearButtonVisible="true"
-                                 fileNameVisible="true"/>
+                        dataContainer="itemDc"
+                        property="image"
+                        clearButtonVisible="true"
+                        fileNameVisible="true"/>
             </vbox>
         </formLayout>
 

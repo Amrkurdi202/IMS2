@@ -25,7 +25,11 @@
 
     <layout>
         <formLayout id="form" dataContainer="projectDc">
-            <textField id="nameField" property="name" required="true"/>
+            <textField id="nameField"
+                       property="name"
+                       required="true"
+
+            />
             <vbox>
                 <image id="image" property="image" dataContainer="projectDc"/>
                 <fileUploadField

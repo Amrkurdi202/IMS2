@@ -3,8 +3,11 @@ package com.ghazal.ims2.entity;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import io.jmix.core.metamodel.annotation.JmixProperty;
+
 import jakarta.persistence.*;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @JmixEntity
@@ -20,12 +23,26 @@ public class AttendanceRecord {
     @JoinColumn(name = "DAY_ID")
     private AttendanceDay day;
 
-    @Enumerated(EnumType.STRING) // 👈 this tells JPA to store the enum as text
+    @Enumerated(EnumType.STRING)
     @Column(name = "ACTION", nullable = false)
     private AttendanceAction action;
 
     @Column(name = "TIME")
     private LocalTime time;
+
+    // 🔹 12-hour formatter
+    private static final DateTimeFormatter TWELVE_H =
+            DateTimeFormatter.ofPattern("hh:mm a");
+
+    // 🔹 Virtual 12h time property for UI (not stored in DB)
+    @Transient
+    @JmixProperty
+    public String getTime12h() {
+        if (time == null) {
+            return null;
+        }
+        return time.format(TWELVE_H);
+    }
 
     @InstanceName
     public String getDisplayName() {
@@ -44,7 +61,4 @@ public class AttendanceRecord {
 
     public LocalTime getTime() { return time; }
     public void setTime(LocalTime time) { this.time = time; }
-
-
-
 }
