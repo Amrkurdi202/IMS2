@@ -86,6 +86,7 @@ public class UserDetailView extends StandardDetailView<User> {
 
     @Subscribe(id = "saveAndCloseButton", subject = "clickListener")
     public void onSaveAndCloseButtonClick(final ClickEvent<JmixButton> event) {
+        onBeforeSave(null);
         dataManager.save(getEditedEntity());
     }
 

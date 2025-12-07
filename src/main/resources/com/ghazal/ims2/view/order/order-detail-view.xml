@@ -9,13 +9,17 @@
             <fetchPlan extends="_base">
                 <property name="warehouse" fetchPlan="_base"/>
                 <property name="project" fetchPlan="_base"/>
-                <!-- 🔹 Make sure items + item.image are loaded -->
                 <property name="items">
                     <property name="item">
+                        <property name="name"/>
                         <property name="image"/>
                     </property>
+                    <property name="customItem"/>
+                    <property name="customName"/>
+                    <property name="quantity"/>
                 </property>
             </fetchPlan>
+
             <loader/>
             <collection id="itemsDc" property="items"/>
         </instance>
@@ -111,7 +115,7 @@
 
             <!-- RIGHT: big preview of selected item's image -->
             <vbox width="30%">
-                <label text="Item photo preview"/>
+                <span text="Item photo preview"/>
                 <!-- 🔹 This binds to the selected row's item.image -->
                 <image id="itemPreview"
                        dataContainer="itemsDc"
