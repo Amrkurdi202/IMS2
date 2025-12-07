@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @JmixEntity
 @Entity
-@Table(name = "POINT")
+@Table(name = "point")
 public class Point extends BaseEntity {
     @InstanceName
     @Column(nullable = false)

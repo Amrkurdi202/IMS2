@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @JmixEntity
 @Entity(name = "ORDER_ITEM")
-@Table(name = "ORDER_ITEM")
+@Table(name = "order_item")
 public class OrderItem {
 
     @Id

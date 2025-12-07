@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.31.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1765131376795-1" author="amr">
+        <createTable tableName="attendance_day">
+            <column name="id" type="char(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_attendance_day"/>
+            </column>
+            <column name="user_id" type="char(36)"/>
+            <column name="day_" type="DATE"/>
+            <column name="caption" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-2" author="amr">
+        <createTable tableName="attendance_record">
+            <column name="id" type="char(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_attendance_record"/>
+            </column>
+            <column name="day_id" type="char(36)"/>
+            <column name="action" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time" type="TIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-3" author="amr">
+        <createTable tableName="flowui_filter_configuration">
+            <column name="id" type="char(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_flowui_filter_configuration"/>
+            </column>
+            <column name="component_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="configuration_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="default_for_all" type="BOOLEAN"/>
+            <column name="root_condition" type="CLOB"/>
+            <column name="sys_tenant_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-4" author="amr">
+        <createTable tableName="flowui_user_settings">
+            <column name="id" type="char(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_flowui_user_settings"/>
+            </column>
+            <column name="create_ts" type="DATETIME"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="key_" type="VARCHAR(255)"/>
+            <column name="value_" type="CLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-5" author="amr">
+        <createTable tableName="ims_order">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ims_order"/>
+            </column>
+            <column name="uuid" type="char(36)"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(255)"/>
+            <column name="deleted_date" type="DATETIME"/>
+            <column name="user_id" type="char(36)"/>
+            <column name="warehouse_id" type="BIGINT"/>
+            <column name="project_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-6" author="amr">
+        <createTable tableName="item">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_item"/>
+            </column>
+            <column name="uuid" type="char(36)"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(255)"/>
+            <column name="deleted_date" type="DATETIME"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image" type="LONGBLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-7" author="amr">
+        <createTable tableName="item_unit_price">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_item_unit_price"/>
+            </column>
+            <column name="uuid" type="char(36)"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(255)"/>
+            <column name="deleted_date" type="DATETIME"/>
+            <column name="item_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="DECIMAL(20, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="warehouse_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-8" author="amr">
+        <createTable tableName="order_item">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_order_item"/>
+            </column>
+            <column name="item_id" type="BIGINT"/>
+            <column name="quantity" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit_price_at_order" type="DECIMAL(20, 2)"/>
+            <column name="custom_item" type="BOOLEAN"/>
+            <column name="custom_name" type="VARCHAR(255)"/>
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-9" author="amr">
+        <createTable tableName="point">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_point"/>
+            </column>
+            <column name="uuid" type="char(36)"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(255)"/>
+            <column name="deleted_date" type="DATETIME"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image" type="LONGBLOB"/>
+            <column name="factor" type="DECIMAL"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-10" author="amr">
+        <createTable tableName="project">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_project"/>
+            </column>
+            <column name="uuid" type="char(36)"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(255)"/>
+            <column name="deleted_date" type="DATETIME"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image" type="LONGBLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-11" author="amr">
+        <createTable tableName="project_point">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_project_point"/>
+            </column>
+            <column name="point_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="room_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-12" author="amr">
+        <createTable tableName="room">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_room"/>
+            </column>
+            <column name="uuid" type="char(36)"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(255)"/>
+            <column name="deleted_date" type="DATETIME"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-13" author="amr">
+        <createTable tableName="sec_resource_policy">
+            <column name="id" type="char(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sec_resource_policy"/>
+            </column>
+            <column name="version" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_ts" type="DATETIME"/>
+            <column name="created_by" type="VARCHAR(50)"/>
+            <column name="update_ts" type="DATETIME"/>
+            <column name="updated_by" type="VARCHAR(50)"/>
+            <column name="delete_ts" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(50)"/>
+            <column name="type_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effect" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="policy_group" type="VARCHAR(255)"/>
+            <column name="role_id" type="char(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-14" author="amr">
+        <createTable tableName="sec_resource_role">
+            <column name="id" type="char(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sec_resource_role"/>
+            </column>
+            <column name="version" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_ts" type="DATETIME"/>
+            <column name="created_by" type="VARCHAR(50)"/>
+            <column name="update_ts" type="DATETIME"/>
+            <column name="updated_by" type="VARCHAR(50)"/>
+            <column name="delete_ts" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(50)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="child_roles" type="CLOB"/>
+            <column name="scopes" type="VARCHAR(255)"/>
+            <column name="sys_tenant_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-15" author="amr">
+        <createTable tableName="sec_role_assignment">
+            <column name="id" type="char(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sec_role_assignment"/>
+            </column>
+            <column name="version" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_ts" type="DATETIME"/>
+            <column name="created_by" type="VARCHAR(50)"/>
+            <column name="update_ts" type="DATETIME"/>
+            <column name="updated_by" type="VARCHAR(50)"/>
+            <column name="delete_ts" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(50)"/>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-16" author="amr">
+        <createTable tableName="sec_row_level_policy">
+            <column name="id" type="char(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sec_row_level_policy"/>
+            </column>
+            <column name="version" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_ts" type="DATETIME"/>
+            <column name="created_by" type="VARCHAR(50)"/>
+            <column name="update_ts" type="DATETIME"/>
+            <column name="updated_by" type="VARCHAR(50)"/>
+            <column name="delete_ts" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(50)"/>
+            <column name="type_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entity_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="where_clause" type="CLOB"/>
+            <column name="join_clause" type="CLOB"/>
+            <column name="script_" type="CLOB"/>
+            <column name="role_id" type="char(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-17" author="amr">
+        <createTable tableName="sec_row_level_role">
+            <column name="id" type="char(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sec_row_level_role"/>
+            </column>
+            <column name="version" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_ts" type="DATETIME"/>
+            <column name="created_by" type="VARCHAR(50)"/>
+            <column name="update_ts" type="DATETIME"/>
+            <column name="updated_by" type="VARCHAR(50)"/>
+            <column name="delete_ts" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(50)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="child_roles" type="CLOB"/>
+            <column name="sys_tenant_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-18" author="amr">
+        <createTable tableName="sec_user_substitution">
+            <column name="id" type="char(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sec_user_substitution"/>
+            </column>
+            <column name="version" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_ts" type="DATETIME"/>
+            <column name="created_by" type="VARCHAR(50)"/>
+            <column name="update_ts" type="DATETIME"/>
+            <column name="updated_by" type="VARCHAR(50)"/>
+            <column name="delete_ts" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(50)"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="substituted_username" type="VARCHAR(255)"/>
+            <column name="start_date" type="DATE"/>
+            <column name="end_date" type="DATE"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-19" author="amr">
+        <createTable tableName="unit">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_unit"/>
+            </column>
+            <column name="uuid" type="char(36)"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(255)"/>
+            <column name="deleted_date" type="DATETIME"/>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-21" author="amr">
+        <createTable tableName="warehouse">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_warehouse"/>
+            </column>
+            <column name="uuid" type="char(36)"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_by" type="VARCHAR(255)"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(255)"/>
+            <column name="deleted_date" type="DATETIME"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image" type="LONGBLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1765131376795-22" author="amr">
+        <addUniqueConstraint columnNames="user_id, day_" constraintName="uc_c31829531239b17102cf71a64"
+                             tableName="attendance_day"/>
+    </changeSet>
+    <changeSet id="1765131376795-23" author="amr">
+        <addUniqueConstraint columnNames="name" constraintName="uc_unit_name" tableName="unit"/>
+    </changeSet>
+    <changeSet id="1765131376795-26" author="amr">
+        <addForeignKeyConstraint baseColumnNames="day_id" baseTableName="attendance_record"
+                                 constraintName="FK_ATTENDANCE_RECORD_ON_DAY" referencedColumnNames="id"
+                                 referencedTableName="attendance_day"/>
+    </changeSet>
+    <changeSet id="1765131376795-27" author="amr">
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="ims_order"
+                                 constraintName="FK_IMS_ORDER_ON_PROJECT" referencedColumnNames="id"
+                                 referencedTableName="project"/>
+    </changeSet>
+    <changeSet id="1765131376795-29" author="amr">
+        <addForeignKeyConstraint baseColumnNames="warehouse_id" baseTableName="ims_order"
+                                 constraintName="FK_IMS_ORDER_ON_WAREHOUSE" referencedColumnNames="id"
+                                 referencedTableName="warehouse"/>
+    </changeSet>
+    <changeSet id="1765131376795-30" author="amr">
+        <addForeignKeyConstraint baseColumnNames="item_id" baseTableName="item_unit_price"
+                                 constraintName="FK_ITEM_UNIT_PRICE_ON_ITEM" referencedColumnNames="id"
+                                 referencedTableName="item"/>
+    </changeSet>
+    <changeSet id="1765131376795-31" author="amr">
+        <addForeignKeyConstraint baseColumnNames="unit_id" baseTableName="item_unit_price"
+                                 constraintName="FK_ITEM_UNIT_PRICE_ON_UNIT" referencedColumnNames="id"
+                                 referencedTableName="unit"/>
+    </changeSet>
+    <changeSet id="1765131376795-32" author="amr">
+        <addForeignKeyConstraint baseColumnNames="warehouse_id" baseTableName="item_unit_price"
+                                 constraintName="FK_ITEM_UNIT_PRICE_ON_WAREHOUSE" referencedColumnNames="id"
+                                 referencedTableName="warehouse"/>
+    </changeSet>
+    <changeSet id="1765131376795-33" author="amr">
+        <addForeignKeyConstraint baseColumnNames="item_id" baseTableName="order_item"
+                                 constraintName="FK_ORDER_ITEM_ON_ITEM" referencedColumnNames="id"
+                                 referencedTableName="item"/>
+    </changeSet>
+    <changeSet id="1765131376795-34" author="amr">
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="order_item"
+                                 constraintName="FK_ORDER_ITEM_ON_ORDER" referencedColumnNames="id"
+                                 referencedTableName="ims_order"/>
+    </changeSet>
+    <changeSet id="1765131376795-35" author="amr">
+        <addForeignKeyConstraint baseColumnNames="point_id" baseTableName="project_point"
+                                 constraintName="FK_PROJECT_POINT_ON_POINT" referencedColumnNames="id"
+                                 referencedTableName="point"/>
+    </changeSet>
+    <changeSet id="1765131376795-36" author="amr">
+        <addForeignKeyConstraint baseColumnNames="room_id" baseTableName="project_point"
+                                 constraintName="FK_PROJECT_POINT_ON_ROOM" referencedColumnNames="id"
+                                 referencedTableName="room"/>
+    </changeSet>
+    <changeSet id="1765131376795-37" author="amr">
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="room" constraintName="FK_ROOM_ON_PROJECT"
+                                 referencedColumnNames="id" referencedTableName="project"/>
+    </changeSet>
+    <changeSet id="1765131376795-38" author="amr">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="sec_resource_policy"
+                                 constraintName="FK_SEC_RESOURCE_POLICY_ON_ROLE" referencedColumnNames="id"
+                                 referencedTableName="sec_resource_role"/>
+    </changeSet>
+    <changeSet id="1765131376795-39" author="amr">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="sec_row_level_policy"
+                                 constraintName="FK_SEC_ROW_LEVEL_POLICY_ON_ROLE" referencedColumnNames="id"
+                                 referencedTableName="sec_row_level_role"/>
+    </changeSet>
+
+</databaseChangeLog>

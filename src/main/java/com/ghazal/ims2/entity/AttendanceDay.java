@@ -10,10 +10,9 @@ import java.util.UUID;
 
 @JmixEntity
 @Entity
-@Table(name = "ATTENDANCE_DAY",
+@Table(name = "attendance_day",
         uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "DAY_"}))
 public class AttendanceDay {
-
     @Id
     @JmixGeneratedValue
     private UUID id;

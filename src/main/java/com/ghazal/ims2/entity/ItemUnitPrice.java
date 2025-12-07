@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @JmixEntity
 @Entity
-@Table(name = "ITEM_UNIT_PRICE")
+@Table(name = "item_unit_price")
 public class ItemUnitPrice extends BaseEntity {
 
     @InstanceName

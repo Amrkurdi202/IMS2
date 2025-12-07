@@ -13,7 +13,7 @@
     </data>
     <actions>
         <action id="saveAction" type="detail_saveClose"/>
-        <action id="closeAction" type="detail_close"/>
+        <action id="closeAction" type="detail_discard"/>
     </actions>
     <facets>
         <dataLoadCoordinator auto="true"/>

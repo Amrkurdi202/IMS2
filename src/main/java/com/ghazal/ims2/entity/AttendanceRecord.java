@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @JmixEntity
 @Entity
-@Table(name = "ATTENDANCE_RECORD")
+@Table(name = "attendance_record")
 public class AttendanceRecord {
 
     @Id

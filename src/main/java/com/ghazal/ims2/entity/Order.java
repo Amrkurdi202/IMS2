@@ -8,7 +8,7 @@ import java.util.List;
 
 @JmixEntity
 @Entity(name = "ims_Order")
-@Table(name = "ims_Order")
+@Table(name = "ims_order")
 public class Order extends BaseEntity {
     @InstanceName
     @ManyToOne(fetch = FetchType.LAZY)

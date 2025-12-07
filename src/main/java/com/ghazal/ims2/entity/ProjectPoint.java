@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 @JmixEntity
 @Entity
-@Table(name = "PROJECT_POINT")
+@Table(name = "project_point")
 public class ProjectPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

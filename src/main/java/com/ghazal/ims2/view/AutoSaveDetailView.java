@@ -7,14 +7,4 @@ import io.jmix.flowui.view.ViewComponent;
 
 public abstract class AutoSaveDetailView<T> extends StandardDetailView<T> {
 
-    @ViewComponent
-    private DataContext dataContext;
-
-    @Override
-    protected void onDetach(DetachEvent event) {
-        if (dataContext != null) {
-            dataContext.save(true);
-        }
-        super.onDetach(event);
-    }
 }

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 @JmixEntity
 @Entity
-@Table(name = "WAREHOUSE")
+@Table(name = "warehouse")
 public class Warehouse extends BaseEntity {
     @Column(nullable = false)
     @InstanceName

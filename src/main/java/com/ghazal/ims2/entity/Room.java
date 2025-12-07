@@ -13,7 +13,7 @@ import java.util.List;
 
 @JmixEntity
 @Entity
-@Table(name = "ROOM")
+@Table(name = "room")
 public class Room extends BaseEntity {
     @Column(nullable = false)
     @InstanceName

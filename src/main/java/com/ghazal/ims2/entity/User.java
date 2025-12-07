@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @JmixEntity
 @Entity
-@Table(name = "USER_", indexes = {
+@Table(name = "user_", indexes = {
         @Index(name = "IDX_USER__ON_USERNAME", columnList = "USERNAME", unique = true)
 })
 public class User implements JmixUserDetails, HasTimeZone {

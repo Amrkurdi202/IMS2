@@ -11,7 +11,7 @@ import java.util.List;
 
 @JmixEntity
 @Entity
-@Table(name = "PROJECT")
+@Table(name = "project")
 public class Project extends BaseEntity {
     @InstanceName
     @Column(nullable = false)
