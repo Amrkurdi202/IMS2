@@ -1,11 +1,12 @@
 package com.ghazal.ims2.view.warehouse;
 
 import com.ghazal.ims2.entity.Warehouse;
+import com.ghazal.ims2.entity.WarehouseRepository;
+import com.ghazal.ims2.view.AutoSaveDetailView;
 import com.ghazal.ims2.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
-import io.jmix.flowui.Notifications;
 import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.image.JmixImage;
 import io.jmix.flowui.component.upload.FileUploadField;
@@ -21,7 +22,7 @@ import java.io.ByteArrayInputStream;
 @ViewController("Warehouse.detail")
 @ViewDescriptor("warehouse-detail-view.xml")
 @EditedEntityContainer("warehouseDc")
-public class WarehouseDetailView extends StandardDetailView<Warehouse> {
+public class WarehouseDetailView extends AutoSaveDetailView<Warehouse> {
 
     @ViewComponent
     private JmixImage<Object> image;
@@ -30,7 +31,7 @@ public class WarehouseDetailView extends StandardDetailView<Warehouse> {
     private JmixComboBox<Boolean> internalField;
 
     @Autowired
-    private Notifications notifications;
+    private WarehouseRepository warehouseRepository;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -49,10 +50,8 @@ public class WarehouseDetailView extends StandardDetailView<Warehouse> {
     @Subscribe("imageField")
     public void onImageFieldFileUploadSucceeded(FileUploadSucceededEvent<FileUploadField> event) {
         byte[] bytes = event.getSource().getValue();
-
         getEditedEntity().setImage(bytes);
 
-        // preview (no setSrc(null))
         if (bytes != null && bytes.length > 0) {
             image.setSrc(new StreamResource(
                     event.getFileName(),
@@ -61,21 +60,9 @@ public class WarehouseDetailView extends StandardDetailView<Warehouse> {
         }
     }
 
-    @Subscribe("saveAndCloseButton")
+    @Subscribe(id = "saveAndCloseButton", subject = "clickListener")
     public void onSaveAndCloseButtonClick(ClickEvent<JmixButton> event) {
-        try {
-            getViewData().getDataContext().save();
-            closeWithSave();
-        } catch (Exception e) {
-            notifications.create("Save failed: " + e.getMessage())
-                    .withType(Notifications.Type.ERROR)
-                    .show();
-            // also check server console for full stacktrace
-        }
-    }
-
-    @Subscribe("closeButton")
-    public void onCloseButtonClick(ClickEvent<JmixButton> event) {
-        closeWithDiscard();
+        warehouseRepository.save(getEditedEntity());
+        closeWithSave();
     }
 }

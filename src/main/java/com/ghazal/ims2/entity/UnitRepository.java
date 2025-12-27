@@ -1,10 +1,8 @@
 package com.ghazal.ims2.entity;
 
-
+import io.jmix.core.repository.JmixDataRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UnitRepository {
-    public void save(Unit editedEntity) {
-    }
+public interface UnitRepository extends JmixDataRepository<Unit, Long> {
 }
