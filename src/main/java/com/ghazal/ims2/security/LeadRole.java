@@ -1,10 +1,6 @@
 package com.ghazal.ims2.security;
 
-import com.ghazal.ims2.entity.Item;
-import com.ghazal.ims2.entity.Order;
-import com.ghazal.ims2.entity.OrderItem;
-import com.ghazal.ims2.entity.Project;
-import com.ghazal.ims2.entity.Warehouse;
+import com.ghazal.ims2.entity.*;
 import io.jmix.security.model.EntityAttributePolicyAction;
 import io.jmix.security.model.EntityPolicyAction;
 import io.jmix.security.model.SecurityScope;
@@ -26,15 +22,17 @@ public interface LeadRole {
     // ---- UI access (menus + views) ----
 
     @MenuPolicy(menuIds = {
-            "application",   // root menu group from menu-config.xml
-            "OrdersMenu"     // Orders menu item id from menu-config.xml
+            "application",
+            "LeadDashboardMenu", // Dashboard
+            "LeadOrdersMenu"     // My Orders
     })
     @ViewPolicy(viewIds = {
-            // Orders screens
+            "LeadDashboard.view",
+            "LeadOrder.list",
+
+            // Order CRUD
             "ims_order.list",
             "ims_Order.detail",
-
-            // Order item detail (only if you still use it)
             "OrderItem.detail",
 
             // Lookups
@@ -58,7 +56,7 @@ public interface LeadRole {
                     EntityPolicyAction.READ,
                     EntityPolicyAction.CREATE,
                     EntityPolicyAction.UPDATE,
-                    EntityPolicyAction.DELETE   // ✅ now valid
+                    EntityPolicyAction.DELETE
             })
     @EntityAttributePolicy(entityClass = OrderItem.class,
             attributes = "*",
@@ -85,4 +83,20 @@ public interface LeadRole {
             attributes = "*",
             action = EntityAttributePolicyAction.VIEW)
     void project();
+
+    // Attendance permissions for dashboard
+
+    @EntityPolicy(entityClass = AttendanceDay.class,
+            actions = {EntityPolicyAction.READ, EntityPolicyAction.CREATE, EntityPolicyAction.UPDATE})
+    @EntityAttributePolicy(entityClass = AttendanceDay.class,
+            attributes = "*",
+            action = EntityAttributePolicyAction.MODIFY)
+    void attendanceDay();
+
+    @EntityPolicy(entityClass = AttendanceRecord.class,
+            actions = {EntityPolicyAction.READ, EntityPolicyAction.CREATE})
+    @EntityAttributePolicy(entityClass = AttendanceRecord.class,
+            attributes = "*",
+            action = EntityAttributePolicyAction.MODIFY)
+    void attendanceRecord();
 }

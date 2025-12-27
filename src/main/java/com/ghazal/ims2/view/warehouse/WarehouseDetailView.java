@@ -2,17 +2,18 @@ package com.ghazal.ims2.view.warehouse;
 
 import com.ghazal.ims2.entity.Warehouse;
 import com.ghazal.ims2.view.main.MainView;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import io.jmix.flowui.Notifications;
+import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.image.JmixImage;
 import io.jmix.flowui.component.upload.FileUploadField;
+import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.kit.component.upload.event.FileUploadSucceededEvent;
-import io.jmix.flowui.view.EditedEntityContainer;
-import io.jmix.flowui.view.StandardDetailView;
-import io.jmix.flowui.view.Subscribe;
-import io.jmix.flowui.view.ViewComponent;
-import io.jmix.flowui.view.ViewController;
-import io.jmix.flowui.view.ViewDescriptor;
+import io.jmix.flowui.view.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
 
@@ -25,16 +26,56 @@ public class WarehouseDetailView extends StandardDetailView<Warehouse> {
     @ViewComponent
     private JmixImage<Object> image;
 
+    @ViewComponent
+    private JmixComboBox<Boolean> internalField;
+
+    @Autowired
+    private Notifications notifications;
+
+    @Subscribe
+    public void onInit(InitEvent event) {
+        internalField.setItems(Boolean.TRUE, Boolean.FALSE);
+        internalField.setItemLabelGenerator(v -> Boolean.TRUE.equals(v) ? "Internal" : "External");
+    }
+
+    @Subscribe
+    public void onBeforeShow(BeforeShowEvent event) {
+        Warehouse w = getEditedEntity();
+        if (w.getInternal() == null) {
+            w.setInternal(Boolean.FALSE);
+        }
+    }
+
     @Subscribe("imageField")
     public void onImageFieldFileUploadSucceeded(FileUploadSucceededEvent<FileUploadField> event) {
         byte[] bytes = event.getSource().getValue();
+
+        getEditedEntity().setImage(bytes);
+
+        // preview (no setSrc(null))
         if (bytes != null && bytes.length > 0) {
             image.setSrc(new StreamResource(
                     event.getFileName(),
                     () -> new ByteArrayInputStream(bytes)
             ));
-        } else {
-            image.setSrc((String) null);
         }
+    }
+
+    @Subscribe("saveAndCloseButton")
+    public void onSaveAndCloseButtonClick(ClickEvent<JmixButton> event) {
+        try {
+            getViewData().getDataContext().save();
+            closeWithSave();
+        } catch (Exception e) {
+            notifications.create("Save failed: " + e.getMessage())
+                    .withType(Notifications.Type.ERROR)
+                    .show();
+            // also check server console for full stacktrace
+        }
+    }
+
+    @Subscribe("closeButton")
+    public void onCloseButtonClick(ClickEvent<JmixButton> event) {
+        closeWithDiscard();
     }
 }

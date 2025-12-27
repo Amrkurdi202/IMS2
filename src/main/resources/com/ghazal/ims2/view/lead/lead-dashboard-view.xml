@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="Lead Dashboard"
+      focusComponent="attendanceTable">
+
+    <data>
+
+        <!-- Attendance records (top table) -->
+        <collection id="attendanceDc"
+                    class="com.ghazal.ims2.entity.AttendanceRecord"/>
+
+        <!-- Items for cards -->
+        <collection id="itemsDc"
+                    class="com.ghazal.ims2.entity.Item">
+            <fetchPlan extends="_base">
+                <property name="name"/>
+                <property name="image"/>
+            </fetchPlan>
+            <loader id="itemsDl">
+                <query>
+                    <![CDATA[
+                        select i from Item i
+                        order by i.name
+                    ]]>
+                </query>
+            </loader>
+        </collection>
+
+        <!-- Warehouses for comboBox -->
+        <collection id="warehousesDc"
+                    class="com.ghazal.ims2.entity.Warehouse">
+            <fetchPlan extends="_base">
+                <property name="name"/>
+            </fetchPlan>
+            <loader id="warehousesDl">
+                <query>
+                    <![CDATA[
+                        select w from Warehouse w
+                        order by w.name
+                    ]]>
+                </query>
+            </loader>
+        </collection>
+
+        <!-- Projects for comboBox -->
+        <collection id="projectsDc"
+                    class="com.ghazal.ims2.entity.Project">
+            <fetchPlan extends="_base">
+                <property name="name"/>
+            </fetchPlan>
+            <loader id="projectsDl">
+                <query>
+                    <![CDATA[
+                        select p from Project p
+                        order by p.name
+                    ]]>
+                </query>
+            </loader>
+        </collection>
+
+        <!-- Quick items table ("cart") -->
+        <keyValueCollection id="quickItemsDc">
+            <properties>
+                <property name="item"      type="string"/>
+                <property name="warehouse" type="string"/>
+                <property name="project"   type="string"/>
+                <property name="quantity"  type="string"/>
+            </properties>
+        </keyValueCollection>
+
+    </data>
+
+    <layout>
+        <!-- Root container: full width, good on mobile -->
+        <vbox width="100%"
+              padding="true"
+              spacing="true">
+
+            <!-- ======== ATTENDANCE TOP HALF ======== -->
+
+            <details summaryText="Attendance Management"
+                     opened="true">
+                <vbox spacing="true" width="100%">
+
+                    <hbox spacing="true" width="100%">
+                        <button id="inBtn"       text="IN"          themeNames="primary small"/>
+                        <button id="outBtn"      text="OUT"         themeNames="small"/>
+                        <button id="breakBtn"    text="Break start" themeNames="small"/>
+                        <button id="breakEndBtn" text="Break end"   themeNames="small"/>
+                    </hbox>
+
+
+                    <!-- show all rows, no inner scrollbar -->
+                    <dataGrid id="attendanceTable"
+                              dataContainer="attendanceDc"
+                              width="100%"
+                              allRowsVisible="true">
+                        <columns>
+                            <column property="action"/>
+                            <column property="time"/>
+                        </columns>
+                    </dataGrid>
+
+                </vbox>
+            </details>
+
+            <!-- small gap -->
+            <span text="" classNames="mt-s"/>
+
+            <!-- ======== QUICK ITEMS BOTTOM HALF ======== -->
+
+            <span text="Quick Items"
+                  classNames="text-xl font-semibold"/>
+
+            <!-- Search bar -->
+            <hbox spacing="true" width="100%">
+                <textField id="itemsSearchField"
+                           width="100%"
+                           placeholder="Search items..."/>
+                <button id="itemsSearchBtn"
+                        icon="vaadin:search"/>
+            </hbox>
+
+            <!-- Cards container: first row already contains Custom card -->
+            <div id="itemsCardsContainer"
+                 classNames="items-grid mt-m">
+
+                <vbox id="customItemCard"
+                      padding="true"
+                      spacing="true"
+                      classNames="item-card custom-full border rounded-l shadow-s">
+
+                    <span text="Custom item" classNames="font-semibold"/>
+
+                    <textField id="customItemNameField"
+                               width="100%"
+                               placeholder="Enter custom item name"/>
+
+                    <button id="addCustomItemBtn"
+                            width="100%"
+                            themeNames="small"
+                            text="+ Add custom"
+                            enabled="false"/>
+                </vbox>
+
+
+
+
+            </div>
+
+
+            <!-- Warehouse & Project selection -->
+            <hbox spacing="true"
+                  classNames="mt-m"
+                  width="100%">
+                <comboBox id="warehouseCombo"
+                          label="Warehouse"
+                          width="100%"/>
+                <comboBox id="projectCombo"
+                          label="Project"
+                          width="100%"/>
+            </hbox>
+
+            <!-- Quick items table -->
+            <dataGrid id="quickItemsTable"
+                      dataContainer="quickItemsDc"
+                      width="100%"
+                      allRowsVisible="true">
+                <columns>
+                    <column property="item"      header="Item"/>
+                    <column property="warehouse" header="Warehouse"/>
+                    <column property="project"   header="Project"/>
+                    <column property="quantity"  header="Qty"/>
+                </columns>
+            </dataGrid>
+
+            <!-- Row actions -->
+            <hbox spacing="true" classNames="mt-s">
+                <button id="decreaseQtyBtn" text="−"/>
+                <button id="increaseQtyBtn" text="+"/>
+                <button id="deleteLineBtn"  text="Delete"/>
+                <button id="saveOrderBtn"
+                        text="Save order"
+                        themeNames="primary"
+                        classNames="ml-auto"/>
+            </hbox>
+
+        </vbox>
+    </layout>
+
+</view>

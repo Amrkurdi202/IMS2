@@ -1,37 +1,39 @@
-/* Detail screen images (item, warehouse, etc.) */
-.app-image {
-    max-width: 150px;
-    max-height: 150px;
-    width: auto;
-    height: auto;
+/* 2 cards per row */
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+/* Card style (compact + prevents overflow) */
+.item-card {
+    padding: 10px;
+    border-radius: 10px;
+    min-width: 0;      /* IMPORTANT: prevents inputs/text from overflowing */
+    overflow: hidden;
+}
+
+/* Card image */
+.item-card img {
+    width: 100%;
+    height: 110px;
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
-/* Thumbnails in grids that show photos */
-.photo-grid img {
-    max-width: 100px;   /* or 80px if you prefer bigger */
-    max-height: 100px;
-    object-fit: cover;
+/* Custom card should take the full row */
+.custom-full {
+    grid-column: 1 / -1;
 }
 
-
-/* Big preview of item image on the Order screen */
-.order-item-preview {
-    max-width: 400px;      /* big but still bounded */
-    max-height: 400px;
-    width: 100%;           /* use panel width */
-    height: auto;
-    object-fit: contain;   /* show the whole image, no cropping */
-    border-radius: 8px;    /* optional, just looks nicer */
-    border: 1px solid rgba(0,0,0,0.1);
-    padding: 4px;
-    box-sizing: border-box;
+/* Mobile tweaks */
+@media (max-width: 600px) {
+    .items-grid { gap: 8px; }
+    .item-card { padding: 8px; }
+    .item-card img { height: 90px; }
 }
 
-/* Big images in the gallery view grid */
-.item-gallery-grid img {
-    max-width: 300px;   /* you can increase/decrease */
-    max-height: 300px;
-    object-fit: contain;
+/* Super tiny phones: 1 column */
+@media (max-width: 360px) {
+    .items-grid { grid-template-columns: 1fr; }
 }

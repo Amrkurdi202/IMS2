@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="Warehouse Items Report"
+      focusComponent="warehouseField">
+
+    <data>
+        <!-- Warehouses list for the combo -->
+        <collection id="warehousesDc" class="com.ghazal.ims2.entity.Warehouse">
+            <fetchPlan extends="_base">
+                <property name="name"/>
+                <property name="internal"/>
+            </fetchPlan>
+            <loader id="warehousesDl">
+                <query><![CDATA[
+                    select w from Warehouse w
+                    where w.internal = true
+                    order by w.name
+                ]]></query>
+            </loader>
+        </collection>
+
+        <!-- Report rows (KeyValueEntity) -->
+        <keyValueCollection id="reportDc">
+            <!-- ✅ IMPORTANT: properties must be HERE -->
+            <properties>
+                <property name="itemName" class="java.lang.String"/>
+                <property name="netQty" class="java.math.BigDecimal"/>
+            </properties>
+
+            <loader id="reportDl">
+                <query><![CDATA[
+                    select oi.item.name as itemName,
+                           sum(coalesce(oi.quantity, 0)) as netQty
+                    from ORDER_ITEM oi join oi.order o
+                    where o.warehouse = :warehouse
+                      and oi.item is not null
+                      and (
+                        :q is null or :q = ''
+                        or lower(oi.item.name) like concat('%', lower(:q), '%')
+                      )
+                    group by oi.item.name
+                    order by oi.item.name
+                ]]></query>
+            </loader>
+        </keyValueCollection>
+    </data>
+
+    <facets>
+        <dataLoadCoordinator auto="false"/>
+    </facets>
+
+    <layout>
+        <vbox spacing="true" padding="true">
+            <hbox spacing="true" alignItems="END">
+
+                <entityComboBox id="warehouseField"
+                                metaClass="Warehouse"
+                                itemsContainer="warehousesDc"
+                                label="Warehouse (Internal only)"
+                                width="380px"/>
+
+                <textField id="qField"
+                           label="Search item"
+                           width="280px"/>
+
+                <button id="searchBtn" text="Search"/>
+                <button id="resetBtn" text="Reset"/>
+            </hbox>
+
+            <dataGrid id="grid"
+                      dataContainer="reportDc"
+                      width="100%">
+                <columns>
+                    <column property="itemName" header="Item"/>
+                    <column property="netQty" header="Net Qty (Return + / Purchase -)"/>
+                </columns>
+            </dataGrid>
+        </vbox>
+    </layout>
+</view>

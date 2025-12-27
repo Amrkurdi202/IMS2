@@ -2,33 +2,47 @@
 <view xmlns="http://jmix.io/schema/flowui/view"
       title="msg://WarehouseDetailView.title"
       focusComponent="form">
+
     <data>
         <instance id="warehouseDc"
                   class="com.ghazal.ims2.entity.Warehouse">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="name"/>
+                <property name="internal"/>
+                <property name="image"/>
+            </fetchPlan>
             <loader/>
         </instance>
     </data>
+
     <actions>
         <action id="saveAction" type="detail_saveClose"/>
         <action id="closeAction" type="detail_discard"/>
     </actions>
+
     <facets>
         <dataLoadCoordinator auto="true"/>
     </facets>
+
     <layout>
         <formLayout id="form" dataContainer="warehouseDc">
             <textField id="nameField" property="name" required="true"/>
+
+            <comboBox id="internalField"
+                      property="internal"
+                      label="Warehouse type"
+                      required="true"/>
+
             <vbox>
                 <image id="image" property="image" dataContainer="warehouseDc"/>
-                <fileUploadField
-                        dataContainer="warehouseDc"
-                        id="imageField"
-                        property="image"
-                        clearButtonVisible="true"
-                        fileNameVisible="true"/>
+                <fileUploadField id="imageField"
+                                 dataContainer="warehouseDc"
+                                 property="image"
+                                 clearButtonVisible="true"
+                                 fileNameVisible="true"/>
             </vbox>
         </formLayout>
+
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>

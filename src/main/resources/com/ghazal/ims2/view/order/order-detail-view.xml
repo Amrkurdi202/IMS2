@@ -69,7 +69,6 @@
                 <!-- Buttons for managing order lines -->
                 <hbox classNames="buttons-panel">
                     <button id="addItemBtn" text="Add item"/>
-                    <button id="addItemFromGalleryBtn" text="Add from gallery"/>
                 </hbox>
 
 

@@ -1,0 +1,41 @@
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="My Orders"
+      focusComponent="ordersTable">
+
+    <data>
+        <collection id="ordersDc"
+                    class="com.ghazal.ims2.entity.Order">
+            <!-- _base already includes user, warehouse, project, createdDate -->
+            <fetchPlan extends="_base"/>
+
+            <loader id="ordersDl">
+                <query>
+                    <![CDATA[
+                        select o
+                        from ims_Order o
+                        where o.user.username = :currentUser
+                        order by o.createdDate desc
+                    ]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+
+    <layout>
+        <vbox padding="true" spacing="true">
+            <span text="My Orders"/>
+
+            <dataGrid id="ordersTable"
+                      dataContainer="ordersDc"
+                      width="100%"
+                      allRowsVisible="true">
+                <columns>
+                    <column property="warehouse"/>
+                    <column property="project"/>
+                    <column property="createdDate"/>
+                </columns>
+            </dataGrid>
+
+        </vbox>
+    </layout>
+</view>

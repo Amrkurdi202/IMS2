@@ -1,5 +1,6 @@
 <menu id="application" title="msg://com.ghazal.ims2/menu.application.title" opened="true">
 
+    <!-- Admin / general management -->
     <item view="User.list" title="msg://com.ghazal.ims2.view.user/UserListView.title"/>
     <item view="Item.list" title="msg://com.ghazal.ims2.view.item/ItemListView.title"/>
     <item view="Warehouse.list" title="msg://com.ghazal.ims2.view.warehouse/WarehouseListView.title"/>
@@ -8,9 +9,16 @@
     <item view="Project.list" title="msg://com.ghazal.ims2.view.project/ProjectListView.title"/>
     <item view="Room.list" title="msg://com.ghazal.ims2.view.room/RoomListView.title"/>
     <item view="Point.list" title="msg://com.ghazal.ims2.view.point/PointListView.title"/>
+
+    <!-- Orders (admin / full list) -->
     <item id="OrdersMenu"
           view="ims_order.list"
           title="msg://com.ghazal.ims2.view.order/OrderListView.title"/>
+
+    <!-- Lead-specific orders -->
+    <item id="LeadOrdersMenu"
+          view="LeadOrder.list"
+          title="My Orders"/>
 
     <!-- worker menu item -->
     <item id="AttendanceView"
@@ -19,6 +27,18 @@
 
     <item view="AttendanceDay.list" title="All Attendance Records"/>
     <item view="ProjectCostReportView" title="Project Cost Report"/>
-    <item view="AttendanceDaysReport"
-          title="Attendance Days Report"/>
+    <item view="AttendanceDaysReport" title="Attendance Days Report"/>
+    <item view="WarehouseItemsReportView" title="Warehouse Items Report"/>
+    <item view="ItemWarehousesReportView" title="Item Warehouses Report"/>
+
+
+
+    <!-- Lead Dashboard: attendance (top) + orders (bottom) -->
+    <item id="LeadDashboardMenu"
+          view="LeadDashboard.view"
+          title="Dashboard"/>
+
+
+
+
 </menu>
