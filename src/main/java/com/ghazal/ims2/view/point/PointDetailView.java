@@ -21,25 +21,29 @@ import java.io.ByteArrayInputStream;
 @ViewDescriptor(path = "point-detail-view.xml")
 @EditedEntityContainer("pointDc")
 public class PointDetailView extends AutoSaveDetailView<Point> {
-    
+
     @ViewComponent
     private JmixImage<Object> image;
-    
+
     @Autowired
     private PointRepository pointRepository;
 
     @Subscribe("imageField")
-    public void onImageFieldFileUploadSucceeded(final FileUploadSucceededEvent<FileUploadField> event) {
-        image.setSrc(
-                new StreamResource(
-                        event.getFileName(),
-                        () -> new ByteArrayInputStream(event.getSource().getValue())
-                )
-        );
+    public void onImageFieldFileUploadSucceeded(FileUploadSucceededEvent<FileUploadField> event) {
+        byte[] bytes = event.getSource().getValue();
+        getEditedEntity().setImage(bytes);
+
+        if (bytes != null && bytes.length > 0) {
+            image.setSrc(new StreamResource(
+                    event.getFileName(),
+                    () -> new ByteArrayInputStream(bytes)
+            ));
+        }
     }
 
     @Subscribe(id = "saveAndCloseButton", subject = "clickListener")
-    public void onSaveAndCloseButtonClick(final ClickEvent<JmixButton> event) {
+    public void onSaveAndCloseButtonClick(ClickEvent<JmixButton> event) {
         pointRepository.save(getEditedEntity());
+        closeWithSave();
     }
 }

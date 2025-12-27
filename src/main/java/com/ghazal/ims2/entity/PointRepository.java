@@ -1,9 +1,8 @@
 package com.ghazal.ims2.entity;
 
+import io.jmix.core.repository.JmixDataRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PointRepository {
-    public void save(Point editedEntity) {
-    }
+public interface PointRepository extends JmixDataRepository<Point, Long> {
 }

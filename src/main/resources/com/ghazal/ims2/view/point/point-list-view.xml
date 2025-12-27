@@ -5,19 +5,13 @@
     <data>
         <collection id="pointsDc"
                     class="com.ghazal.ims2.entity.Point">
-            <fetchPlan extends="_base">
-            </fetchPlan>
-            <loader id="pointsDl" readOnly="true">
-                <query>
-                    <![CDATA[select e from Point e order by e.name]]>
-                </query>
+            <fetchPlan extends="_base"/>
+            <loader id="pointsDl">
+                <query><![CDATA[select e from Point e order by e.name]]></query>
             </loader>
         </collection>
     </data>
-    <actions>
-        <action id="selectAction" type="lookup_select"/>
-        <action id="discardAction" type="lookup_discard"/>
-    </actions>
+
     <facets>
         <dataLoadCoordinator auto="true"/>
         <urlQueryParameters>
@@ -25,17 +19,19 @@
             <pagination component="pagination"/>
         </urlQueryParameters>
     </facets>
+
     <layout>
-        <genericFilter id="genericFilter"
-                       dataLoader="pointsDl">
+        <genericFilter id="genericFilter" dataLoader="pointsDl">
             <properties include=".*"/>
         </genericFilter>
+
         <hbox id="buttonsPanel" classNames="buttons-panel">
             <button id="createButton" action="pointsDataGrid.create"/>
             <button id="editButton" action="pointsDataGrid.edit"/>
             <button id="removeButton" action="pointsDataGrid.remove"/>
             <simplePagination id="pagination" dataLoader="pointsDl"/>
         </hbox>
+
         <dataGrid id="pointsDataGrid"
                   width="100%"
                   columnReorderingAllowed="true"
@@ -51,9 +47,5 @@
                 <column property="factor"/>
             </columns>
         </dataGrid>
-        <hbox id="lookupActions" visible="false">
-            <button id="selectButton" action="selectAction"/>
-            <button id="discardButton" action="discardAction"/>
-        </hbox>
     </layout>
 </view>

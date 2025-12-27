@@ -9,30 +9,31 @@
             <loader/>
         </instance>
     </data>
+
     <actions>
-        <action id="saveAction" type="detail_saveClose"/>
         <action id="closeAction" type="detail_discard"/>
     </actions>
+
     <facets>
         <dataLoadCoordinator auto="true"/>
     </facets>
+
     <layout>
         <formLayout id="form" dataContainer="pointDc">
             <textField id="nameField" property="name" required="true"/>
             <bigDecimalField id="factorField" property="factor"/>
             <vbox>
                 <image id="image" property="image" dataContainer="pointDc" classNames="app-image"/>
-                <fileUploadField
-                        dataContainer="pointDc"
-                        id="imageField"
-                        property="image"
-                        clearButtonVisible="true"
-                        fileNameVisible="true"/>
+                <fileUploadField id="imageField"
+                                 dataContainer="pointDc"
+                                 property="image"
+                                 clearButtonVisible="true"
+                                 fileNameVisible="true"/>
             </vbox>
         </formLayout>
 
         <hbox id="detailActions">
-            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="saveAndCloseButton" text="OK"/>
             <button id="closeButton" action="closeAction"/>
         </hbox>
     </layout>
