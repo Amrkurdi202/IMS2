@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-      title="Warehouse Items Report"
+      title="msg://com.ghazal.ims2.view.report/WarehouseItemsReportView.title"
       focusComponent="warehouseField">
 
     <data>
@@ -56,23 +56,23 @@
                 <entityComboBox id="warehouseField"
                                 metaClass="Warehouse"
                                 itemsContainer="warehousesDc"
-                                label="Warehouse (Internal only)"
+                                label="msg://com.ghazal.ims2.view.report/warehouseInternal"
                                 width="380px"/>
 
                 <textField id="qField"
-                           label="Search item"
+                           label="msg://com.ghazal.ims2.view.report/searchItem"
                            width="280px"/>
 
-                <button id="searchBtn" text="Search"/>
-                <button id="resetBtn" text="Reset"/>
+                <button id="searchBtn" text="msg://common.search"/>
+                <button id="resetBtn" text="msg://common.reset"/>
             </hbox>
 
             <dataGrid id="grid"
                       dataContainer="reportDc"
                       width="100%">
                 <columns>
-                    <column property="itemName" header="Item"/>
-                    <column property="netQty" header="Net Qty (Return + / Purchase -)"/>
+                    <column property="itemName" header="msg://com.ghazal.ims2.view.report/item"/>
+                    <column property="netQty" header="msg://com.ghazal.ims2.view.report/netQtyColumn"/>
                 </columns>
             </dataGrid>
         </vbox>

@@ -40,12 +40,12 @@
 
         <hbox id="buttonsPanel" classNames="buttons-panel">
             <!-- NEW: plain button, no action -->
-            <button id="createButton" text="Create record"/>
+            <button id="createButton" text="msg://com.ghazal.ims2.view.attendance/createRecord"/>
 
             <button id="removeButton"
                     action="attendanceRecordsDataGrid.removeAction"/>
 
-            <button id="saveButton" text="Save changes"/>
+            <button id="saveButton" text="msg://com.ghazal.ims2.view.attendance/saveChanges"/>
 
             <simplePagination id="pagination"
                               dataLoader="attendanceRecordsDl"/>
@@ -69,8 +69,8 @@
                 <column property="time" editable="true"/>
 
                 <editorActionsColumn width="8em" flexGrow="0">
-                    <editButton text="Edit"/>
-                    <closeButton text="Close"/>
+                    <editButton text="msg://common.edit"/>
+                    <closeButton text="msg://common.close"/>
                 </editorActionsColumn>
             </columns>
         </dataGrid>

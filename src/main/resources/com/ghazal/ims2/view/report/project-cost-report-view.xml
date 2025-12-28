@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-      title="Project Cost Report"
+      title="msg://com.ghazal.ims2.view.report/ProjectCostReportView.title"
       focusComponent="generateBtn">
 
     <data>
@@ -30,37 +30,37 @@
     <layout>
         <vbox padding="24px" spacing="16px">
             <formLayout responsiveSteps="1, 2, 400px">
-                <datePicker id="fromDateField" label="From date"/>
-                <datePicker id="toDateField" label="To date"/>
+                <datePicker id="fromDateField" label="msg://com.ghazal.ims2.view.report/fromDate"/>
+                <datePicker id="toDateField" label="msg://com.ghazal.ims2.view.report/toDate"/>
 
                 <!-- 👇 added metaClass and kept itemsContainer -->
                 <entityComboBox id="projectField"
-                                label="Project"
+                                label="msg://com.ghazal.ims2.view.report/project"
                                 metaClass="Project"
                                 itemsContainer="projectsDc"
                                 itemLabelGenerator="name"/>
 
                 <entityComboBox id="warehouseField"
-                                label="Warehouse (optional)"
+                                label="msg://com.ghazal.ims2.view.report/warehouseOptional"
                                 metaClass="Warehouse"
                                 itemsContainer="warehousesDc"
                                 itemLabelGenerator="name"
                                 clearButtonVisible="true"/>
 
                 <numberField id="pointValueField"
-                             label="Point value (price per point)"
+                             label="msg://com.ghazal.ims2.view.report/pointValue"
                              step="1"
                              required="true"/>
             </formLayout>
 
             <button id="generateBtn"
-                    text="Generate report"
+                    text="msg://common.generateReport"
                     onClick="onGenerateBtnClick"/>
 
             <hbox spacing="24px" justifyContent="AROUND" width="30%">
-                <span id="totalPointsLabel" text="Total points: -" />
-                <span id="pointsCostLabel" text="Points cost: -" />
-                <span id="clientAmountLabel" text="Client amount: -" />
+                <span id="totalPointsLabel" text="msg://com.ghazal.ims2.view.report/totalPointsLabel" />
+                <span id="pointsCostLabel" text="msg://com.ghazal.ims2.view.report/pointsCostLabel" />
+                <span id="clientAmountLabel" text="msg://com.ghazal.ims2.view.report/clientAmountLabel" />
             </hbox>
 
         </vbox>

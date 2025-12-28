@@ -21,6 +21,10 @@ repositories {
     }
 }
 
+configurations.configureEach {
+    exclude group: "com.mysql", module: "mysql-connector-j";
+}
+
 dependencies {
     implementation 'io.jmix.core:jmix-core-starter'
     implementation 'io.jmix.data:jmix-eclipselink-starter'
@@ -37,7 +41,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
 
-    runtimeOnly 'com.mysql:mysql-connector-j:8.3.0'
+    runtimeOnly "org.mariadb.jdbc:mariadb-java-client:3.5.7";
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

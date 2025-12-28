@@ -1,5 +1,5 @@
 <view xmlns="http://jmix.io/schema/flowui/view"
-      title="My Orders"
+      title="msg://com.ghazal.ims2.view.lead/LeadOrderListView.title"
       focusComponent="ordersTable">
 
     <data>
@@ -23,7 +23,7 @@
 
     <layout>
         <vbox padding="true" spacing="true">
-            <span text="My Orders"/>
+            <span text="msg://com.ghazal.ims2/menu.myOrders"/>
 
             <dataGrid id="ordersTable"
                       dataContainer="ordersDc"

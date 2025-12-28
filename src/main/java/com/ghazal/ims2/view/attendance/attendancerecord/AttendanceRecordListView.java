@@ -37,6 +37,8 @@ public class AttendanceRecordListView extends StandardListView<AttendanceRecord>
 
     @Autowired
     private Notifications notifications;
+    @Autowired
+    private MessageBundle messageBundle;
 
     @Autowired
     private Dialogs dialogs;
@@ -91,7 +93,7 @@ public class AttendanceRecordListView extends StandardListView<AttendanceRecord>
     @Subscribe("createButton")
     public void onCreateButtonClick(ClickEvent<JmixButton> event) {
         if (currentDay == null) {
-            notifications.show("No attendance day selected.");
+            notifications.show(messageBundle.getMessage("AttendanceRecordListView.noAttendanceDaySelected"));
             return;
         }
 
@@ -130,7 +132,7 @@ public class AttendanceRecordListView extends StandardListView<AttendanceRecord>
 
     private void saveChanges() {
         if (attendanceRecordsDc.getItems().isEmpty()) {
-            notifications.show("No records to save");
+            notifications.show(messageBundle.getMessage("AttendanceRecordListView.noRecordsToSave"));
             return;
         }
 
@@ -140,6 +142,6 @@ public class AttendanceRecordListView extends StandardListView<AttendanceRecord>
 
         attendanceRecordsDl.load();
         hasUnsavedChanges = false;
-        notifications.show("Changes saved");
+        notifications.show(messageBundle.getMessage("AttendanceRecordListView.changesSaved"));
     }
 }

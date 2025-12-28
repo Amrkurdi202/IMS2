@@ -68,13 +68,13 @@
 
                 <!-- Buttons for managing order lines -->
                 <hbox classNames="buttons-panel">
-                    <button id="addItemBtn" text="Add item"/>
+                    <button id="addItemBtn" text="msg://com.ghazal.ims2.view.order/addItem"/>
                 </hbox>
 
 
                 <hbox id="qtyActions">
-                    <button id="qtyMinusBtn" text="Qty -"/>
-                    <button id="qtyPlusBtn" text="Qty +"/>
+                    <button id="qtyMinusBtn" text="msg://com.ghazal.ims2.view.order/qtyMinus"/>
+                    <button id="qtyPlusBtn" text="msg://com.ghazal.ims2.view.order/qtyPlus"/>
                 </hbox>
 
                 <!-- Items grid: ONLY simple property columns -->
@@ -95,13 +95,13 @@
                         <column property="item" editable="true"/>
 
                         <!-- Is this a custom ad-hoc item? -->
-                        <column property="customItem" header="Custom?" editable="true"/>
+                        <column property="customItem" header="msg://com.ghazal.ims2.view.order/customColumn" editable="true"/>
 
                         <!-- Free text name when customItem = true -->
-                        <column property="customName" header="Custom name" editable="true"/>
+                        <column property="customName" header="msg://com.ghazal.ims2.view.order/customNameColumn" editable="true"/>
 
                         <!-- Quantity (for normal items) or price (for custom items) -->
-                        <column property="quantity" header="Qty / Price" editable="true"/>
+                        <column property="quantity" header="msg://com.ghazal.ims2.view.order/qtyPriceColumn" editable="true"/>
 
                         <editorActionsColumn>
                             <editButton icon="PENCIL"/>
@@ -114,7 +114,7 @@
 
             <!-- RIGHT: big preview of selected item's image -->
             <vbox width="30%">
-                <span text="Item photo preview"/>
+                <span text="msg://com.ghazal.ims2.view.order/itemPhotoPreview"/>
                 <!-- 🔹 This binds to the selected row's item.image -->
                 <image id="itemPreview"
                        dataContainer="itemsDc"

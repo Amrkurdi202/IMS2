@@ -13,6 +13,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.router.Route;
 import io.jmix.flowui.component.combobox.EntityComboBox;
+import io.jmix.flowui.kit.component.ComponentUtils;
 import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -54,6 +55,9 @@ public class ProjectCostReportView extends StandardView {
     @Autowired
     private ProjectCostReportService reportService;
 
+    @Autowired
+    private MessageBundle messageBundle;
+
     @Subscribe("generateBtn")
     public void onGenerateBtnClick(ClickEvent<Button> event) {
         Project project = projectField.getValue();
@@ -63,7 +67,7 @@ public class ProjectCostReportView extends StandardView {
         Double pointValDouble = pointValueField.getValue();
 
         if (project == null || from == null || to == null || pointValDouble == null) {
-            Notification.show("Please fill project, dates, and point value",
+            Notification.show(messageBundle.getMessage("ProjectCostReportView.fillRequired"),
                     3000, Notification.Position.MIDDLE);
             return;
         }
@@ -76,8 +80,8 @@ public class ProjectCostReportView extends StandardView {
                 project, offsetFrom, offsetTo, warehouse, pointValue
         );
 
-        totalPointsLabel.setText("Total points: " + result.getTotalPoints());
-        pointsCostLabel.setText("Points cost: " + result.getPointsCost());
-        clientAmountLabel.setText("Client amount: " + result.getClientAmount());
+        totalPointsLabel.setText(messageBundle.getMessage("ProjectCostReportView.totalPoints") + ": " + result.getTotalPoints());
+        pointsCostLabel.setText(messageBundle.getMessage("ProjectCostReportView.pointsCost") + ": " + result.getPointsCost());
+        clientAmountLabel.setText(messageBundle.getMessage("ProjectCostReportView.clientAmount") + ": " + result.getClientAmount());
     }
 }

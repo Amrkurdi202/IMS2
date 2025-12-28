@@ -54,7 +54,7 @@
             <columns resizable="true">
                 <column property="name"/>
                 <!-- 🔹 image column that will show the picture in list & lookup -->
-                <column property="image" header="Photo"/>
+                <column property="image" header="msg://common.photo"/>
             </columns>
         </dataGrid>
 

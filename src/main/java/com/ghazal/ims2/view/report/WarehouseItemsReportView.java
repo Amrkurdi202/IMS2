@@ -33,6 +33,8 @@ public class WarehouseItemsReportView extends StandardView {
 
     @Autowired
     private Notifications notifications;
+    @Autowired
+    private MessageBundle messageBundle;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -62,7 +64,7 @@ public class WarehouseItemsReportView extends StandardView {
     private void loadReport() {
         Warehouse wh = warehouseField.getValue();
         if (wh == null) {
-            notifications.create("Select a warehouse first")
+            notifications.create(messageBundle.getMessage("WarehouseItemsReportView.selectWarehouse"))
                     .withType(Notifications.Type.WARNING)
                     .show();
             return;

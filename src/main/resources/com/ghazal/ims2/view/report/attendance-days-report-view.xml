@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-      title="Attendance Days Report"
+      title="msg://com.ghazal.ims2.view.report/AttendanceDaysReportView.title"
       focusComponent="reportTable">
 
     <data>
@@ -35,11 +35,11 @@
             <!-- Filters -->
             <formLayout id="filtersForm" responsiveSteps="1, 200px">
                 <datePicker id="fromDateField"
-                            label="From date"/>
+                            label="msg://com.ghazal.ims2.view.report/fromDate"/>
                 <datePicker id="toDateField"
-                            label="To date"/>
+                            label="msg://com.ghazal.ims2.view.report/toDate"/>
                 <button id="generateBtn"
-                        text="Generate report"/>
+                        text="msg://common.generateReport"/>
             </formLayout>
 
             <!-- Result table -->
@@ -47,8 +47,8 @@
                       width="100%"
                       dataContainer="reportDc">
                 <columns>
-                    <column property="user" header="Employee"/>
-                    <column property="daysCount" header="Total days"/>
+                    <column property="user" header="msg://common.employee"/>
+                    <column property="daysCount" header="msg://common.totalDays"/>
                 </columns>
             </dataGrid>
 

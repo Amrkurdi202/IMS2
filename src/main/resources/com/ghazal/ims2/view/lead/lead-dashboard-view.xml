@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-      title="Lead Dashboard"
+      title="msg://com.ghazal.ims2.view.lead/LeadDashboardView.title"
       focusComponent="attendanceTable">
 
     <data>
@@ -78,15 +78,15 @@
 
             <!-- ======== ATTENDANCE TOP HALF ======== -->
 
-            <details summaryText="Attendance Management"
+            <details summaryText="msg://com.ghazal.ims2.view.lead/attendanceManagement"
                      opened="true">
                 <vbox spacing="true" width="100%">
 
                     <hbox spacing="true" width="100%">
-                        <button id="inBtn"       text="IN"          themeNames="primary small"/>
-                        <button id="outBtn"      text="OUT"         themeNames="small"/>
-                        <button id="breakBtn"    text="Break start" themeNames="small"/>
-                        <button id="breakEndBtn" text="Break end"   themeNames="small"/>
+                        <button id="inBtn"       text="msg://com.ghazal.ims2.view.attendance/in"          themeNames="primary small"/>
+                        <button id="outBtn"      text="msg://com.ghazal.ims2.view.attendance/out"         themeNames="small"/>
+                        <button id="breakBtn"    text="msg://com.ghazal.ims2.view.attendance/breakStart" themeNames="small"/>
+                        <button id="breakEndBtn" text="msg://com.ghazal.ims2.view.attendance/breakEnd"   themeNames="small"/>
                     </hbox>
 
 
@@ -109,14 +109,14 @@
 
             <!-- ======== QUICK ITEMS BOTTOM HALF ======== -->
 
-            <span text="Quick Items"
+            <span text="msg://com.ghazal.ims2.view.lead/quickItems"
                   classNames="text-xl font-semibold"/>
 
             <!-- Search bar -->
             <hbox spacing="true" width="100%">
                 <textField id="itemsSearchField"
                            width="100%"
-                           placeholder="Search items..."/>
+                           placeholder="msg://com.ghazal.ims2.view.lead/searchItems"/>
                 <button id="itemsSearchBtn"
                         icon="vaadin:search"/>
             </hbox>
@@ -130,16 +130,16 @@
                       spacing="true"
                       classNames="item-card custom-full border rounded-l shadow-s">
 
-                    <span text="Custom item" classNames="font-semibold"/>
+                    <span text="msg://com.ghazal.ims2.view.order/customItem" classNames="font-semibold"/>
 
                     <textField id="customItemNameField"
                                width="100%"
-                               placeholder="Enter custom item name"/>
+                               placeholder="msg://com.ghazal.ims2.view.lead/enterCustomItemName"/>
 
                     <button id="addCustomItemBtn"
                             width="100%"
                             themeNames="small"
-                            text="+ Add custom"
+                            text="msg://com.ghazal.ims2.view.lead/addCustom"
                             enabled="false"/>
                 </vbox>
 
@@ -154,10 +154,10 @@
                   classNames="mt-m"
                   width="100%">
                 <comboBox id="warehouseCombo"
-                          label="Warehouse"
+                          label="msg://com.ghazal.ims2.view.lead/warehouse"
                           width="100%"/>
                 <comboBox id="projectCombo"
-                          label="Project"
+                          label="msg://com.ghazal.ims2.view.lead/project"
                           width="100%"/>
             </hbox>
 
@@ -167,20 +167,20 @@
                       width="100%"
                       allRowsVisible="true">
                 <columns>
-                    <column property="item"      header="Item"/>
-                    <column property="warehouse" header="Warehouse"/>
-                    <column property="project"   header="Project"/>
-                    <column property="quantity"  header="Qty"/>
+                    <column property="item"      header="msg://com.ghazal.ims2.view.lead/item"/>
+                    <column property="warehouse" header="msg://com.ghazal.ims2.view.lead/warehouse"/>
+                    <column property="project"   header="msg://com.ghazal.ims2.view.lead/project"/>
+                    <column property="quantity"  header="msg://com.ghazal.ims2.view.lead/qty"/>
                 </columns>
             </dataGrid>
 
             <!-- Row actions -->
             <hbox spacing="true" classNames="mt-s">
-                <button id="decreaseQtyBtn" text="−"/>
-                <button id="increaseQtyBtn" text="+"/>
-                <button id="deleteLineBtn"  text="Delete"/>
+                <button id="decreaseQtyBtn" text="msg://com.ghazal.ims2.view.lead/decrease"/>
+                <button id="increaseQtyBtn" text="msg://com.ghazal.ims2.view.lead/increase"/>
+                <button id="deleteLineBtn" text="msg://common.delete"/>
                 <button id="saveOrderBtn"
-                        text="Save order"
+                        text="msg://com.ghazal.ims2.view.lead/saveOrder"
                         themeNames="primary"
                         classNames="ml-auto"/>
             </hbox>

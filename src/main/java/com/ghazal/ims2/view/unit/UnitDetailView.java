@@ -23,6 +23,8 @@ public class UnitDetailView extends AutoSaveDetailView<Unit> {
 
     @Autowired
     private Notifications notifications;
+    @Autowired
+    private MessageBundle messageBundle;
 
     @Subscribe(id = "saveAndCloseButton", subject = "clickListener")
     public void onSaveAndCloseButtonClick(ClickEvent<JmixButton> event) {
@@ -30,7 +32,7 @@ public class UnitDetailView extends AutoSaveDetailView<Unit> {
             unitRepository.save(getEditedEntity());
             closeWithSave();
         } catch (Exception e) {
-            notifications.create("Save failed: " + e.getMessage())
+            notifications.create(messageBundle.getMessage("UnitDetailView.saveFailed") + ": " + e.getMessage())
                     .withType(Notifications.Type.ERROR)
                     .show();
         }

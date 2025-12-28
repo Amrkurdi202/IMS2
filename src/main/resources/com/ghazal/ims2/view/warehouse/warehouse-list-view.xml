@@ -54,8 +54,8 @@
 
             <columns resizable="true">
                 <column property="name"/>
-                <column key="type" header="Type"/>
-                <column key="photo" header="Photo"/>
+                <column key="type" header="msg://common.type"/>
+                <column key="photo" header="msg://common.photo"/>
             </columns>
 
         </dataGrid>

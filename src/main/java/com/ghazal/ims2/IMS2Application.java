@@ -23,6 +23,7 @@ import javax.sql.DataSource;
 @Push
 @Theme(value = "IMS2")
 @SpringBootApplication
+@PWA(name = "Ghazal System", shortName = "Ghazal")
 @EntityScan("com.ghazal.ims2.entity") // ✅ Add this line
 
 public class IMS2Application implements AppShellConfigurator {

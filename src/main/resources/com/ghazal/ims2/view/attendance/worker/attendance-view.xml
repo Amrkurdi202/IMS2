@@ -3,7 +3,7 @@
       xmlns:c="http://jmix.io/schema/flowui/jmix/flowui/component"
       xmlns:layout="http://jmix.io/schema/flowui/layout"
       controller="com.ghazal.ims2.view.attendance.worker.AttendanceView"
-      title="Attendance Management"
+      title="msg://com.ghazal.ims2.view.attendance/AttendanceManagement.title"
       focusComponent="actionsBox">
 
     <data>
@@ -13,10 +13,10 @@
 
     <layout>
         <hbox>
-            <button id="inButton" text="IN"/>
-            <button id="outButton" text="OUT"/>
-            <button id="breakButton" text="Break start"/>
-            <button id="breakEndButton" text="Break end"/>
+            <button id="inButton" text="msg://com.ghazal.ims2.view.attendance/in"/>
+            <button id="outButton" text="msg://com.ghazal.ims2.view.attendance/out"/>
+            <button id="breakButton" text="msg://com.ghazal.ims2.view.attendance/breakStart"/>
+            <button id="breakEndButton" text="msg://com.ghazal.ims2.view.attendance/breakEnd"/>
         </hbox>
 
         <dataGrid id="attendanceGrid"
@@ -24,7 +24,7 @@
                   dataContainer="attendanceDc">
             <columns>
                 <column property="action"/>
-                <column property="time12h" header="Time"/>
+                <column property="time12h" header="msg://common.time"/>
             </columns>
         </dataGrid>
 

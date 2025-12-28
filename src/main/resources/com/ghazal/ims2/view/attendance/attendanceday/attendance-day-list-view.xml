@@ -48,7 +48,7 @@
 
             <!-- this button will open the records list -->
             <button id="recordsButton"
-                    text="View records"/>
+                    text="msg://com.ghazal.ims2.view.attendance/viewRecords"/>
 
             <simplePagination id="pagination"
                               dataLoader="attendanceDaysDl"/>

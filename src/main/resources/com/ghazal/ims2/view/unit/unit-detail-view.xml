@@ -27,7 +27,7 @@
         </formLayout>
 
         <hbox id="detailActions">
-            <button id="saveAndCloseButton" text="OK"/>
+            <button id="saveAndCloseButton" text="msg://common.ok"/>
             <button id="closeButton" action="closeAction"/>
         </hbox>
     </layout>

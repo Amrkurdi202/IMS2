@@ -18,25 +18,25 @@
     <!-- Lead-specific orders -->
     <item id="LeadOrdersMenu"
           view="LeadOrder.list"
-          title="My Orders"/>
+          title="msg://com.ghazal.ims2/menu.myOrders"/>
 
     <!-- worker menu item -->
     <item id="AttendanceView"
           view="AttendanceView"
-          title="My Attendance"/>
+          title="msg://com.ghazal.ims2/menu.myAttendance"/>
 
-    <item view="AttendanceDay.list" title="All Attendance Records"/>
-    <item view="ProjectCostReportView" title="Project Cost Report"/>
-    <item view="AttendanceDaysReport" title="Attendance Days Report"/>
-    <item view="WarehouseItemsReportView" title="Warehouse Items Report"/>
-    <item view="ItemWarehousesReportView" title="Item Warehouses Report"/>
+    <item view="AttendanceDay.list" title="msg://com.ghazal.ims2/menu.allAttendanceRecords"/>
+    <item view="ProjectCostReportView" title="msg://com.ghazal.ims2.view.report/ProjectCostReportView.title"/>
+    <item view="AttendanceDaysReport" title="msg://com.ghazal.ims2.view.report/AttendanceDaysReportView.title"/>
+    <item view="WarehouseItemsReportView" title="msg://com.ghazal.ims2.view.report/WarehouseItemsReportView.title"/>
+    <item view="ItemWarehousesReportView" title="msg://com.ghazal.ims2.view.report/ItemWarehousesReportView.title"/>
 
 
 
     <!-- Lead Dashboard: attendance (top) + orders (bottom) -->
     <item id="LeadDashboardMenu"
           view="LeadDashboard.view"
-          title="Dashboard"/>
+          title="msg://com.ghazal.ims2/menu.dashboard"/>
 
 
 

@@ -54,6 +54,8 @@ public class LeadDashboardView extends StandardView {
     private DataManager dataManager;
     @Autowired
     private CurrentAuthentication currentAuthentication;
+    @Autowired
+    private MessageBundle messageBundle;
 
     // ---------- TOP: Attendance ----------
 
@@ -236,10 +238,10 @@ public class LeadDashboardView extends StandardView {
         title.setText(item.getName() != null ? item.getName() : "(no name)");
 
         Span desc = uiComponents.create(Span.class);
-        desc.setText("Item from catalog");
+        desc.setText(messageBundle.getMessage("LeadDashboardView.itemFromCatalog"));
 
         Button addBtn = uiComponents.create(Button.class);
-        addBtn.setText("+ Add");
+        addBtn.setText(messageBundle.getMessage("LeadDashboardView.addButton"));
 
         addBtn.getElement().getThemeList().add("small");
 
@@ -334,7 +336,7 @@ public class LeadDashboardView extends StandardView {
     public void onAddCustomItemBtnClick(ClickEvent<Button> event) {
         String name = customItemNameField.getValue();
         if (name == null || name.trim().isEmpty()) {
-            notifications.show("Enter custom item name first.");
+            notifications.show(messageBundle.getMessage("LeadDashboardView.enterCustomItemName"));
             return;
         }
 
@@ -351,7 +353,7 @@ public class LeadDashboardView extends StandardView {
     public void onIncreaseQtyBtnClick(ClickEvent<Button> event) {
         KeyValueEntity selected = quickItemsTable.getSingleSelectedItem();
         if (selected == null) {
-            notifications.show("Select a line first.");
+            notifications.show(messageBundle.getMessage("LeadDashboardView.selectLineFirst"));
             return;
         }
         int qty = safeInt(selected.getValue("quantity"));
@@ -363,7 +365,7 @@ public class LeadDashboardView extends StandardView {
     public void onDecreaseQtyBtnClick(ClickEvent<Button> event) {
         KeyValueEntity selected = quickItemsTable.getSingleSelectedItem();
         if (selected == null) {
-            notifications.show("Select a line first.");
+            notifications.show(messageBundle.getMessage("LeadDashboardView.selectLineFirst"));
             return;
         }
         int qty = safeInt(selected.getValue("quantity"));
@@ -375,7 +377,7 @@ public class LeadDashboardView extends StandardView {
     public void onDeleteLineBtnClick(ClickEvent<Button> event) {
         KeyValueEntity selected = quickItemsTable.getSingleSelectedItem();
         if (selected == null) {
-            notifications.show("Select a line first.");
+            notifications.show(messageBundle.getMessage("LeadDashboardView.selectLineFirst"));
             return;
         }
         quickItemsDc.getMutableItems().remove(selected);
@@ -386,7 +388,7 @@ public class LeadDashboardView extends StandardView {
     @Subscribe("saveOrderBtn")
     public void onSaveOrderBtnClick(ClickEvent<Button> event) {
         if (quickItemsDc.getItems().isEmpty()) {
-            notifications.show("Add at least one item to the table.");
+            notifications.show(messageBundle.getMessage("LeadDashboardView.addAtLeastOneItem"));
             return;
         }
 
@@ -394,7 +396,7 @@ public class LeadDashboardView extends StandardView {
         Project project = projectCombo.getValue();
 
         if (warehouse == null || project == null) {
-            notifications.show("Select warehouse and project first.");
+            notifications.show(messageBundle.getMessage("LeadDashboardView.selectWarehouseAndProject"));
             return;
         }
 
@@ -433,7 +435,7 @@ public class LeadDashboardView extends StandardView {
         }
 
         dataManager.save(order);
-        notifications.show("Order saved successfully.");
+        notifications.show(messageBundle.getMessage("LeadDashboardView.orderSavedSuccessfully"));
         quickItemsDc.getMutableItems().clear();
     }
 

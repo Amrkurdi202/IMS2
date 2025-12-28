@@ -19,6 +19,8 @@ public class AttendanceDayListView extends StandardListView<AttendanceDay> {
 
     @Autowired
     private Notifications notifications;
+    @Autowired
+    private MessageBundle messageBundle;
 
     @ViewComponent
     private DataGrid<AttendanceDay> attendanceDaysDataGrid;
@@ -31,7 +33,7 @@ public class AttendanceDayListView extends StandardListView<AttendanceDay> {
     public void onRecordsButtonClick(ClickEvent<JmixButton> event) {
         AttendanceDay selected = attendanceDaysDataGrid.getSingleSelectedItem();
         if (selected == null) {
-            notifications.show("Please select a day first");
+            notifications.show(messageBundle.getMessage("AttendanceDayListView.selectDayFirst"));
             return;
         }
 

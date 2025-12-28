@@ -14,6 +14,7 @@ import io.jmix.flowui.model.CollectionContainer;
 import io.jmix.flowui.model.CollectionLoader;
 import io.jmix.flowui.view.*;
 import com.ghazal.ims2.view.main.MainView;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "admin/item-warehouses-report", layout = MainView.class)
 @ViewController("ItemWarehousesReportView")
@@ -39,6 +40,8 @@ public class ItemWarehousesReportView extends StandardView {
     private io.jmix.flowui.component.grid.DataGrid<ItemUnitPrice> grid;
 
     private final Notifications notifications;
+    @Autowired
+    private MessageBundle messageBundle;
 
     public ItemWarehousesReportView(Notifications notifications) {
         this.notifications = notifications;
@@ -73,7 +76,7 @@ public class ItemWarehousesReportView extends StandardView {
     private void loadGrid() {
         Item item = itemField.getValue();
         if (item == null) {
-            notifications.create("Please select an item.")
+            notifications.create(messageBundle.getMessage("ItemWarehousesReportView.selectItem"))
                     .withType(Notifications.Type.WARNING)
                     .show();
             return;

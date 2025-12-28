@@ -6,22 +6,22 @@ import com.ghazal.ims2.entity.User;
 import com.ghazal.ims2.view.AutoSaveDetailView;
 import com.ghazal.ims2.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.Route;
 import io.jmix.core.DataManager;
 import io.jmix.core.Metadata;
 import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.flowui.Notifications;
+import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.model.CollectionContainer;
-import io.jmix.flowui.view.EditedEntityContainer;
-import io.jmix.flowui.view.StandardDetailView.InitEntityEvent;
-import io.jmix.flowui.view.Subscribe;
-import io.jmix.flowui.view.ViewComponent;
-import io.jmix.flowui.view.ViewController;
-import io.jmix.flowui.view.ViewDescriptor;
+import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.math.BigDecimal;
 
 @Route(value = "orders/:id", layout = MainView.class)
@@ -47,6 +47,49 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
 
     @ViewComponent
     private DataGrid<OrderItem> itemsDataGrid;
+
+    @Autowired
+    private UiComponents uiComponents;
+
+    @Autowired
+    private MessageBundle messageBundle;
+
+    @Supply(to = "itemsDataGrid.customItem", subject = "editorComponent")
+    private Component itemsDataGridCustomItemEditorComponent() {
+        Checkbox checkbox = uiComponents.create(Checkbox.class);
+        checkbox.addClickListener(event -> {
+            System.out.println("hi");
+            if(!itemsDc.getMutableItems().isEmpty()) {
+                OrderItem item = itemsDataGrid.getEditor().getItem();
+                Boolean value = event.getSource().getValue();
+                item.setCustomItem(value);
+                if(value){
+                    item.setItem(null);
+                }
+                else
+                    item.setCustomName("");
+            }
+        });
+        return checkbox;
+    }
+
+    @Supply(to = "itemsDataGrid.customName", subject = "editorComponent")
+    private Component itemsDataGridCustomNameEditorComponent() {
+        TextField textField = uiComponents.create(TextField.class);
+        if(!itemsDc.getMutableItems().isEmpty()) {
+            OrderItem item = itemsDataGrid.getEditor().getItem();
+            textField.setValue(item.getCustomName());
+        }
+        textField.addValueChangeListener(event -> {
+            if(!itemsDc.getMutableItems().isEmpty()) {
+                OrderItem item = itemsDataGrid.getEditor().getItem();
+                item.setCustomName(textField.getValue());
+            }
+        });
+        return textField;
+    }
+    
+    
 
     // bottom Qty +/- buttons
     @ViewComponent
@@ -113,13 +156,13 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
 
         OrderItem selected = itemsDataGrid.getSingleSelectedItem();
         if (selected == null) {
-            notifications.show("Select an item first");
+            notifications.show(messageBundle.getMessage("OrderDetailView.selectItemFirst"));
             return;
         }
 
         // 🚫 Do not use +/- for custom items
         if (Boolean.TRUE.equals(selected.getCustomItem())) {
-            notifications.show("For custom items, change the Qty/Price value directly in the cell.");
+            notifications.show(messageBundle.getMessage("OrderDetailView.customItemInstruction"));
             return;
         }
 

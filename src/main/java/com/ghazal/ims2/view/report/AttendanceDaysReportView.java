@@ -29,6 +29,8 @@ public class AttendanceDaysReportView extends StandardView {
 
     @Autowired
     private Notifications notifications;
+    @Autowired
+    private MessageBundle messageBundle;
 
     @Subscribe("generateBtn")
     public void onGenerateBtnClick(ClickEvent<JmixButton> event) {
@@ -36,12 +38,12 @@ public class AttendanceDaysReportView extends StandardView {
         LocalDate to = toDateField.getValue();
 
         if (from == null || to == null) {
-            notifications.show("Please select both From date and To date");
+            notifications.show(messageBundle.getMessage("AttendanceDaysReportView.selectBothDates"));
             return;
         }
 
         if (to.isBefore(from)) {
-            notifications.show("To date cannot be before From date");
+            notifications.show(messageBundle.getMessage("AttendanceDaysReportView.invalidDateRange"));
             return;
         }
 
