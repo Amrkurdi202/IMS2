@@ -6,10 +6,11 @@
         <collection id="itemUnitPricesDc"
                     class="com.ghazal.ims2.entity.ItemUnitPrice">
             <fetchPlan extends="_base">
+
                 <property name="unit" fetchPlan="_base"/>
                 <property name="warehouse" fetchPlan="_base"/>
             </fetchPlan>
-            <loader id="itemUnitPricesDl" readOnly="true">
+            <loader id="itemUnitPricesDl" >
                 <query>
                     <![CDATA[select e from ItemUnitPrice e]]>
                 </query>

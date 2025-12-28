@@ -9,6 +9,5 @@ import io.jmix.flowui.view.*;
 @ViewController(id = "Room.list")
 @ViewDescriptor(path = "room-list-view.xml")
 @LookupComponent("roomsDataGrid")
-@DialogMode(width = "64em")
 public class RoomListView extends StandardListView<Room> {
 }

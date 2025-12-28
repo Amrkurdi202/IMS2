@@ -9,7 +9,7 @@
                 <property name="name"/>
                 <property name="points" fetchPlan="_base"/>
             </fetchPlan>
-            <loader id="roomsDl" readOnly="true">
+            <loader id="roomsDl" >
                 <query>
                     <![CDATA[select e from Room e order by e.name]]>
                 </query>

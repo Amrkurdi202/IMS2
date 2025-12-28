@@ -7,8 +7,8 @@
         <instance id="roomDc"
                   class="com.ghazal.ims2.entity.Room">
             <fetchPlan extends="_base">
-                <property name="points" fetchPlan="_base">
-                </property>
+                <property name="project" fetchPlan="_base"/>
+                <property name="points" fetchPlan="_base"/>
             </fetchPlan>
             <loader/>
             <collection id="pointsDc" property="points"/>
@@ -16,7 +16,6 @@
     </data>
 
     <actions>
-        <action id="saveAction" type="detail_saveClose"/>
         <action id="closeAction" type="detail_discard"/>
     </actions>
 
@@ -27,6 +26,13 @@
     <layout>
         <formLayout id="form" dataContainer="roomDc">
             <textField id="nameField" property="name" required="true"/>
+
+            <entityPicker id="projectField" property="project" required="true">
+                <actions>
+                    <action id="lookup" type="entity_lookup"/>
+                    <action id="clear" type="entity_clear"/>
+                </actions>
+            </entityPicker>
         </formLayout>
 
         <vbox width="100%">
@@ -56,13 +62,11 @@
                         <cancelButton icon="CLOSE" themeNames="error"/>
                     </editorActionsColumn>
                 </columns>
-
-
             </dataGrid>
         </vbox>
 
         <hbox id="detailActions">
-            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="saveAndCloseButton" text="OK"/>
             <button id="closeButton" action="closeAction"/>
         </hbox>
     </layout>

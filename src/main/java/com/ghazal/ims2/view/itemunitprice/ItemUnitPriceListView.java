@@ -9,6 +9,5 @@ import io.jmix.flowui.view.*;
 @ViewController(id = "ItemUnitPrice.list")
 @ViewDescriptor(path = "item-unit-price-list-view.xml")
 @LookupComponent("itemUnitPricesDataGrid")
-@DialogMode(width = "64em")
 public class ItemUnitPriceListView extends StandardListView<ItemUnitPrice> {
 }

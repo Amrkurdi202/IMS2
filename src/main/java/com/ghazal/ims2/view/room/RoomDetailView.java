@@ -2,6 +2,8 @@ package com.ghazal.ims2.view.room;
 
 import com.ghazal.ims2.entity.ProjectPoint;
 import com.ghazal.ims2.entity.Room;
+import com.ghazal.ims2.entity.RoomRepository;
+import com.ghazal.ims2.view.AutoSaveDetailView;
 import com.ghazal.ims2.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.grid.CellFocusEvent;
@@ -10,12 +12,7 @@ import io.jmix.core.Metadata;
 import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.model.CollectionContainer;
-import io.jmix.flowui.view.EditedEntityContainer;
-import io.jmix.flowui.view.StandardDetailView;
-import io.jmix.flowui.view.Subscribe;
-import io.jmix.flowui.view.ViewComponent;
-import io.jmix.flowui.view.ViewController;
-import io.jmix.flowui.view.ViewDescriptor;
+import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
@@ -24,10 +21,13 @@ import java.math.BigDecimal;
 @ViewController("Room.detail")
 @ViewDescriptor("room-detail-view.xml")
 @EditedEntityContainer("roomDc")
-public class RoomDetailView extends StandardDetailView<Room> {
+public class RoomDetailView extends AutoSaveDetailView<Room> {
 
     @Autowired
     private Metadata metadata;
+
+    @Autowired
+    private RoomRepository roomRepository;
 
     @ViewComponent
     private CollectionContainer<ProjectPoint> pointsDc;
@@ -35,19 +35,15 @@ public class RoomDetailView extends StandardDetailView<Room> {
     @ViewComponent
     private DataGrid<ProjectPoint> pointsDataGrid;
 
-    // ---------- Save & close (use DataContext instead of repository) ---------
-
     @Subscribe(id = "saveAndCloseButton", subject = "clickListener")
     public void onSaveAndCloseButtonClick(ClickEvent<JmixButton> event) {
         if (pointsDataGrid.getEditor().isOpen()) {
             pointsDataGrid.getEditor().save();
         }
-        // Let Jmix handle entity saving & validation via DataContext
-        getViewData().getDataContext().save();
+
+        roomRepository.save(getEditedEntity());
         closeWithSave();
     }
-
-    // ---------- Add point ----------------------------------------------------
 
     @Subscribe(id = "addPointBtn", subject = "clickListener")
     public void onAddPointBtnClick(ClickEvent<JmixButton> event) {
@@ -57,45 +53,38 @@ public class RoomDetailView extends StandardDetailView<Room> {
         pointsDataGrid.getEditor().editItem(newPoint);
     }
 
-    // ---------- Merge duplicate points --------------------------------------
-
     @Subscribe("pointsDataGrid")
     public void onPointsDataGridCellFocus(CellFocusEvent<ProjectPoint> event) {
         event.getItem().ifPresent(item -> {
-            long count = pointsDc.getItems()
-                    .stream()
-                    .filter(it -> it.getPoint() == item.getPoint())
+            if (item.getPoint() == null || item.getQuantity() == null) return;
+
+            long count = pointsDc.getItems().stream()
+                    .filter(it -> it.getPoint() != null && it.getPoint().equals(item.getPoint()))
                     .count();
-            if (count < 1)
-                return;
-            if (item.getPoint() != null && item.getQuantity() != null) {
 
-                ProjectPoint duplicate = null;
+            if (count <= 1) return; // no duplicates
 
-                for (ProjectPoint existing : pointsDc.getItems()) {
-                    if (existing != item
-                            && existing.getPoint() != null
-                            && existing.getPoint().equals(item.getPoint())) {
+            ProjectPoint duplicate = null;
 
-                        BigDecimal oldQty = existing.getQuantity() != null
-                                ? existing.getQuantity()
-                                : BigDecimal.ZERO;
-                        BigDecimal newQty = item.getQuantity() != null
-                                ? item.getQuantity()
-                                : BigDecimal.ZERO;
-                        item.setQuantity(oldQty.add(newQty));
+            for (ProjectPoint existing : pointsDc.getItems()) {
+                if (existing != item
+                        && existing.getPoint() != null
+                        && existing.getPoint().equals(item.getPoint())) {
 
-                        duplicate = existing;
-                        break;
-                    }
+                    BigDecimal oldQty = existing.getQuantity() != null ? existing.getQuantity() : BigDecimal.ZERO;
+                    BigDecimal newQty = item.getQuantity() != null ? item.getQuantity() : BigDecimal.ZERO;
+
+                    item.setQuantity(oldQty.add(newQty));
+                    duplicate = existing;
+                    break;
                 }
-
-                if (duplicate != null) {
-                    pointsDc.getMutableItems().remove(duplicate);
-                }
-
-                pointsDataGrid.getDataProvider().refreshAll();
             }
+
+            if (duplicate != null) {
+                pointsDc.getMutableItems().remove(duplicate);
+            }
+
+            pointsDataGrid.getDataProvider().refreshAll();
         });
     }
 }

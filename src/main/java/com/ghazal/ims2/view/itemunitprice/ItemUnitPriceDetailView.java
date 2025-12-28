@@ -15,12 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 @ViewDescriptor(path = "item-unit-price-detail-view.xml")
 @EditedEntityContainer("itemUnitPriceDc")
 public class ItemUnitPriceDetailView extends AutoSaveDetailView<ItemUnitPrice> {
-    
+
     @Autowired
     private ItemUnitPriceRepository itemUnitPriceRepository;
 
     @Subscribe(id = "saveAndCloseButton", subject = "clickListener")
     public void onSaveAndCloseButtonClick(final ClickEvent<JmixButton> event) {
         itemUnitPriceRepository.save(getEditedEntity());
+        closeWithSave();
     }
 }
