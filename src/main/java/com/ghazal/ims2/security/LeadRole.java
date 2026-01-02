@@ -99,4 +99,26 @@ public interface LeadRole {
             attributes = "*",
             action = EntityAttributePolicyAction.MODIFY)
     void attendanceRecord();
+
+
+    @EntityPolicy(entityClass = ItemUnitPrice.class,
+            actions = {EntityPolicyAction.READ})
+    @EntityAttributePolicy(entityClass = ItemUnitPrice.class,
+            attributes = "*",
+            action = EntityAttributePolicyAction.VIEW)
+    void itemUnitPrice();
+    @EntityPolicy(entityClass = Unit.class,
+            actions = {EntityPolicyAction.READ})
+    @EntityAttributePolicy(entityClass = Unit.class,
+            attributes = "*",
+            action = EntityAttributePolicyAction.VIEW)
+    void unit();
+
+
+
+
+
+
+
 }
+

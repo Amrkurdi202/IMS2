@@ -68,7 +68,7 @@
 
                 <!-- Buttons for managing order lines -->
                 <hbox classNames="buttons-panel">
-                    <button id="addItemBtn" text="msg://com.ghazal.ims2.view.order/addItem"/>
+                    <button id="addItemBtn" text="Add +"/>
                 </hbox>
 
 

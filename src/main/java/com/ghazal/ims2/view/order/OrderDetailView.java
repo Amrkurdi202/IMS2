@@ -1,16 +1,18 @@
 package com.ghazal.ims2.view.order;
 
+import com.ghazal.ims2.entity.Item;
+import com.ghazal.ims2.entity.ItemUnitPrice;
 import com.ghazal.ims2.entity.Order;
 import com.ghazal.ims2.entity.OrderItem;
 import com.ghazal.ims2.entity.User;
+import com.ghazal.ims2.entity.Warehouse;
 import com.ghazal.ims2.view.AutoSaveDetailView;
 import com.ghazal.ims2.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.renderer.Renderer;
-import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.Route;
 import io.jmix.core.DataManager;
 import io.jmix.core.Metadata;
@@ -18,11 +20,15 @@ import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.component.grid.DataGrid;
+import io.jmix.flowui.component.valuepicker.EntityPicker;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.model.CollectionContainer;
 import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 
 @Route(value = "orders/:id", layout = MainView.class)
 @ViewController("ims_Order.detail")
@@ -54,42 +60,11 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
     @Autowired
     private MessageBundle messageBundle;
 
-    @Supply(to = "itemsDataGrid.customItem", subject = "editorComponent")
-    private Component itemsDataGridCustomItemEditorComponent() {
-        Checkbox checkbox = uiComponents.create(Checkbox.class);
-        checkbox.addClickListener(event -> {
-            System.out.println("hi");
-            if(!itemsDc.getMutableItems().isEmpty()) {
-                OrderItem item = itemsDataGrid.getEditor().getItem();
-                Boolean value = event.getSource().getValue();
-                item.setCustomItem(value);
-                if(value){
-                    item.setItem(null);
-                }
-                else
-                    item.setCustomName("");
-            }
-        });
-        return checkbox;
-    }
+    @ViewComponent
+    private EntityPicker<Warehouse> warehouseField;
 
-    @Supply(to = "itemsDataGrid.customName", subject = "editorComponent")
-    private Component itemsDataGridCustomNameEditorComponent() {
-        TextField textField = uiComponents.create(TextField.class);
-        if(!itemsDc.getMutableItems().isEmpty()) {
-            OrderItem item = itemsDataGrid.getEditor().getItem();
-            textField.setValue(item.getCustomName());
-        }
-        textField.addValueChangeListener(event -> {
-            if(!itemsDc.getMutableItems().isEmpty()) {
-                OrderItem item = itemsDataGrid.getEditor().getItem();
-                item.setCustomName(textField.getValue());
-            }
-        });
-        return textField;
-    }
-    
-    
+    @ViewComponent
+    private JmixButton addItemBtn;
 
     // bottom Qty +/- buttons
     @ViewComponent
@@ -105,15 +80,12 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
     public void onInitEntity(InitEntityEvent<Order> event) {
         Object authUser = currentAuthentication.getUser();
 
-        // Case 1: security user IS your app User entity
         if (authUser instanceof User appUser) {
             event.getEntity().setUser(appUser);
             return;
         }
 
-        // Case 2: find User by username, but safely (no exception)
         String username = currentAuthentication.getUser().getUsername();
-
         dataManager.load(User.class)
                 .query("select u from User u where u.username = :username")
                 .parameter("username", username)
@@ -126,10 +98,18 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
     // -----------------------------------------------------
     @Subscribe(id = "addItemBtn", subject = "clickListener")
     public void onAddItemBtnClick(ClickEvent<JmixButton> event) {
+
+        if (warehouseField.getValue() == null) {
+            notifications.show("Select warehouse first");
+            return;
+        }
+
         OrderItem line = metadata.create(OrderItem.class);
         line.setOrder(getEditedEntity());
         line.setQuantity(BigDecimal.ZERO);
         itemsDc.getMutableItems().add(line);
+
+        addItemBtn.setText("Add +"); // will change after selecting ItemUnitPrice
 
         // start inline editing for the new row
         itemsDataGrid.getEditor().editItem(line);
@@ -149,7 +129,6 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
     }
 
     private void adjustSelectedQuantity(int delta) {
-        // Save any open editor row first so we don't lose typed values
         if (itemsDataGrid.getEditor().isOpen()) {
             itemsDataGrid.getEditor().save();
         }
@@ -160,25 +139,138 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
             return;
         }
 
-        // 🚫 Do not use +/- for custom items
         if (Boolean.TRUE.equals(selected.getCustomItem())) {
             notifications.show(messageBundle.getMessage("OrderDetailView.customItemInstruction"));
             return;
         }
 
         BigDecimal q = selected.getQuantity();
-        if (q == null) {
-            q = BigDecimal.ZERO;
-        }
-        q = q.add(BigDecimal.valueOf(delta));   // can go negative (returns)
+        if (q == null) q = BigDecimal.ZERO;
+
+        q = q.add(BigDecimal.valueOf(delta));
         selected.setQuantity(q);
 
-        // Refresh only this row
         itemsDataGrid.getDataProvider().refreshItem(selected);
     }
 
     // -----------------------------------------------------
-    // 4) Save & close
+    // 4) Custom Item checkbox editor
+    // -----------------------------------------------------
+    @Supply(to = "itemsDataGrid.customItem", subject = "editorComponent")
+    private Component itemsDataGridCustomItemEditorComponent() {
+        Checkbox checkbox = uiComponents.create(Checkbox.class);
+
+        checkbox.addClickListener(event -> {
+            if (!itemsDc.getMutableItems().isEmpty() && itemsDataGrid.getEditor().isOpen()) {
+
+                OrderItem item = itemsDataGrid.getEditor().getItem();
+                Boolean value = event.getSource().getValue();
+
+                item.setCustomItem(value);
+
+                if (Boolean.TRUE.equals(value)) {
+                    // custom item => no catalog item, no stored unit price
+                    item.setItem(null);
+                    item.setUnitPriceAtOrder(null);
+                    item.setCustomName("");
+                    addItemBtn.setText("Add +");
+                }
+            }
+        });
+
+        return checkbox;
+    }
+
+    @Supply(to = "itemsDataGrid.customName", subject = "editorComponent")
+    private Component itemsDataGridCustomNameEditorComponent() {
+        TextField textField = uiComponents.create(TextField.class);
+
+        if (!itemsDc.getMutableItems().isEmpty() && itemsDataGrid.getEditor().isOpen()) {
+            OrderItem item = itemsDataGrid.getEditor().getItem();
+            if (item.getCustomName() != null) {
+                textField.setValue(item.getCustomName());
+            }
+        }
+
+        textField.addValueChangeListener(event -> {
+            if (!itemsDc.getMutableItems().isEmpty() && itemsDataGrid.getEditor().isOpen()) {
+                OrderItem item = itemsDataGrid.getEditor().getItem();
+                item.setCustomName(textField.getValue());
+            }
+        });
+
+        return textField;
+    }
+
+    // -----------------------------------------------------
+    // 5) ✅ Item editor: choose from ItemUnitPrice filtered by warehouse
+    // -----------------------------------------------------
+    @Supply(to = "itemsDataGrid.item", subject = "editorComponent")
+    private Component itemsDataGridItemEditorComponent() {
+
+        ComboBox<ItemUnitPrice> cb = uiComponents.create(ComboBox.class);
+        cb.setClearButtonVisible(true);
+
+        cb.setItemLabelGenerator(iup ->
+                iup.getItem().getName() + " | " +
+                        iup.getUnit().getName() + " | " +
+                        iup.getPrice()
+        );
+
+        Warehouse wh = warehouseField.getValue();
+        if (wh == null) {
+            cb.setItems(Collections.emptyList());
+            cb.setPlaceholder("Select warehouse first");
+            cb.setReadOnly(true);
+            return cb;
+        }
+
+        List<ItemUnitPrice> available = dataManager.load(ItemUnitPrice.class)
+                .query("select iup from ItemUnitPrice iup " +
+                        "where iup.warehouse = :wh " +
+                        "and iup.unit is not null " +
+                        "order by iup.item.name")
+                .parameter("wh", wh)
+                .list();
+
+        cb.setItems(available);
+
+        // preselect current value (if any)
+        if (itemsDataGrid.getEditor().isOpen()) {
+            OrderItem line = itemsDataGrid.getEditor().getItem();
+            Item currentItem = line.getItem();
+            if (currentItem != null) {
+                available.stream()
+                        .filter(iup -> iup.getItem() != null && iup.getItem().equals(currentItem))
+                        .findFirst()
+                        .ifPresent(cb::setValue);
+            }
+        }
+
+        cb.addValueChangeListener(e -> {
+            if (!itemsDataGrid.getEditor().isOpen()) return;
+
+            OrderItem line = itemsDataGrid.getEditor().getItem();
+            ItemUnitPrice iup = e.getValue();
+
+            if (iup == null) {
+                line.setItem(null);
+                line.setUnitPriceAtOrder(null);
+                addItemBtn.setText("Add +");
+            } else {
+                line.setItem(iup.getItem());
+                line.setUnitPriceAtOrder(iup.getPrice());
+                addItemBtn.setText(iup.getUnit().getName() + " +");
+            }
+
+            itemsDataGrid.getDataProvider().refreshItem(line);
+        });
+
+        return cb;
+    }
+
+    // -----------------------------------------------------
+    // 6) Save & close
     // -----------------------------------------------------
     @Subscribe(id = "saveAndCloseButton", subject = "clickListener")
     public void onSaveAndCloseButtonClick(ClickEvent<JmixButton> event) {

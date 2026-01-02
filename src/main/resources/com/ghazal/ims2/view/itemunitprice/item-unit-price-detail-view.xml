@@ -26,18 +26,14 @@
     <layout spacing="true" padding="true">
         <formLayout id="form" dataContainer="itemUnitPriceDc">
 
-            <entityPicker id="itemField"
-                          property="item"
-                          required="true">
+            <entityPicker id="itemField" property="item" required="true">
                 <actions>
                     <action id="lookup" type="entity_lookup"/>
                     <action id="clear" type="entity_clear"/>
                 </actions>
             </entityPicker>
 
-            <entityPicker id="unitField"
-                          property="unit"
-                          required="true">
+            <entityPicker id="unitField" property="unit" required="true">
                 <actions>
                     <action id="lookup" type="entity_lookup"/>
                     <action id="clear" type="entity_clear"/>
@@ -47,12 +43,9 @@
             <bigDecimalField id="priceField"
                              property="price"
                              required="true"
-                             clearButtonVisible="true"
-            />
+                             clearButtonVisible="true"/>
 
-            <entityPicker id="warehouseField"
-                          property="warehouse"
-                          required="true">
+            <entityPicker id="warehouseField" property="warehouse" required="true">
                 <actions>
                     <action id="lookup" type="entity_lookup"/>
                     <action id="clear" type="entity_clear"/>
@@ -61,9 +54,7 @@
 
         </formLayout>
 
-        <hbox id="actionsBox"
-              classNames="buttons-panel"
-              spacing="true">
+        <hbox id="actionsBox" classNames="buttons-panel" spacing="true">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>
         </hbox>

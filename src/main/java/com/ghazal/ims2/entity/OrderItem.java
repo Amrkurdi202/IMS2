@@ -44,6 +44,10 @@ public class OrderItem {
 
     // -------- getters / setters ----------
 
+
+
+
+
     public Long getId() {
         return id;
     }

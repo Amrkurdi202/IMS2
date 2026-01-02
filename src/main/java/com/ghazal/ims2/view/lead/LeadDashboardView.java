@@ -1,18 +1,12 @@
 package com.ghazal.ims2.view.lead;
 
-import com.ghazal.ims2.entity.AttendanceAction;
-import com.ghazal.ims2.entity.AttendanceRecord;
-import com.ghazal.ims2.entity.Item;
-import com.ghazal.ims2.entity.Order;
-import com.ghazal.ims2.entity.OrderItem;
-import com.ghazal.ims2.entity.Project;
-import com.ghazal.ims2.entity.User;
-import com.ghazal.ims2.entity.Warehouse;
+import com.ghazal.ims2.entity.*;
 import com.ghazal.ims2.service.AttendanceService;
 import com.ghazal.ims2.view.main.MainView;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -34,86 +28,50 @@ import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
-import java.util.List;
-import java.util.Objects;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
-import com.vaadin.flow.component.html.Div;
 
 @Route(value = "lead-dashboard", layout = MainView.class)
 @ViewController("LeadDashboard.view")
 @ViewDescriptor("lead-dashboard-view.xml")
 public class LeadDashboardView extends StandardView {
 
-    @Autowired
-    private AttendanceService attendanceService;
-    @Autowired
-    private Notifications notifications;
-    @Autowired
-    private UiComponents uiComponents;
-    @Autowired
-    private DataManager dataManager;
-    @Autowired
-    private CurrentAuthentication currentAuthentication;
-    @Autowired
-    private MessageBundle messageBundle;
+    @Autowired private AttendanceService attendanceService;
+    @Autowired private Notifications notifications;
+    @Autowired private UiComponents uiComponents;
+    @Autowired private DataManager dataManager;
+    @Autowired private CurrentAuthentication currentAuthentication;
+    @Autowired private MessageBundle messageBundle;
 
     // ---------- TOP: Attendance ----------
+    @ViewComponent private CollectionContainer<AttendanceRecord> attendanceDc;
 
-    @ViewComponent
-    private CollectionContainer<AttendanceRecord> attendanceDc;
+    // ---------- Warehouses / Projects ----------
+    @ViewComponent private CollectionContainer<Warehouse> warehousesDc;
+    @ViewComponent private CollectionLoader<Warehouse> warehousesDl;
 
-    // ---------- ITEMS FOR CARDS ----------
+    @ViewComponent private CollectionContainer<Project> projectsDc;
+    @ViewComponent private CollectionLoader<Project> projectsDl;
 
-    @ViewComponent
-    private CollectionContainer<Item> itemsDc;
+    // ---------- UI ----------
+    @ViewComponent private Div itemsCardsContainer;
+    @ViewComponent private VerticalLayout customItemCard;
+    @ViewComponent private TypedTextField<String> itemsSearchField;
 
-    @ViewComponent
-    private CollectionLoader<Item> itemsDl;
+    // ---------- Bottom cart ----------
+    @ViewComponent private JmixComboBox<Warehouse> warehouseCombo;
+    @ViewComponent private JmixComboBox<Project> projectCombo;
 
-    // ---------- WAREHOUSES / PROJECTS ----------
+    @ViewComponent private KeyValueCollectionContainer quickItemsDc;
+    @ViewComponent private DataGrid<KeyValueEntity> quickItemsTable;
 
-    @ViewComponent
-    private CollectionContainer<Warehouse> warehousesDc;
+    @ViewComponent private TypedTextField<String> customItemNameField;
+    @ViewComponent private Button addCustomItemBtn;
 
-    @ViewComponent
-    private CollectionLoader<Warehouse> warehousesDl;
-
-    @ViewComponent
-    private CollectionContainer<Project> projectsDc;
-
-    @ViewComponent
-    private CollectionLoader<Project> projectsDl;
-
-    // ---------- UI COMPONENTS FOR CARDS & SEARCH ----------
-
-    @ViewComponent
-    private Div itemsCardsContainer;
-
-    @ViewComponent
-    private VerticalLayout customItemCard;
-
-    @ViewComponent
-    private TypedTextField<String> itemsSearchField;
-
-    // ---------- BOTTOM: Quick items "cart" ----------
-
-    @ViewComponent
-    private JmixComboBox<Warehouse> warehouseCombo;
-
-    @ViewComponent
-    private JmixComboBox<Project> projectCombo;
-
-    @ViewComponent
-    private KeyValueCollectionContainer quickItemsDc;
-
-    @ViewComponent
-    private DataGrid<KeyValueEntity> quickItemsTable;
-
-    @ViewComponent
-    private TypedTextField<String> customItemNameField;
-
-    @ViewComponent
-    private Button addCustomItemBtn;
+    // ✅ Build cards from ItemUnitPrice only
+    private final Map<Long, List<ItemUnitPrice>> unitPricesByItemId = new HashMap<>();
+    private final Map<Long, Item> itemsById = new LinkedHashMap<>();
 
     // ----------------- lifecycle -----------------
 
@@ -125,23 +83,26 @@ public class LeadDashboardView extends StandardView {
 
     @Subscribe
     public void onBeforeShow(BeforeShowEvent event) {
-        // load items for cards
-        itemsDl.load();
-
-        // load warehouses & projects
         warehousesDl.load();
         projectsDl.load();
 
-        // bind combos
         warehouseCombo.setItems(warehousesDc.getItems());
-        warehouseCombo.setItemLabelGenerator(wh -> wh == null ? "" : wh.getName());
+        warehouseCombo.setItemLabelGenerator(w -> w == null ? "" : w.getName());
 
         projectCombo.setItems(projectsDc.getItems());
-        projectCombo.setItemLabelGenerator(pr -> pr == null ? "" : pr.getName());
+        projectCombo.setItemLabelGenerator(p -> p == null ? "" : p.getName());
 
-        // build initial cards
+        // ✅ no default selection
+        warehouseCombo.clear();
+        projectCombo.clear();
+
+        // show only custom card until user selects warehouse
+        unitPricesByItemId.clear();
+        itemsById.clear();
         rebuildItemCards(null);
     }
+
+
 
     private void reloadAttendance() {
         attendanceDc.setItems(attendanceService.getTodayRecords());
@@ -179,26 +140,68 @@ public class LeadDashboardView extends StandardView {
         }
     }
 
-    // ========== DYNAMIC CARDS FROM ITEMS ==========
+    // ================== Warehouse changed ==================
 
-    private static final int CARDS_PER_ROW = 2;   // better for mobile
+    @Subscribe("warehouseCombo")
+    public void onWarehouseComboValueChange(ComponentValueChangeEvent<JmixComboBox<Warehouse>, Warehouse> event) {
+        quickItemsDc.getMutableItems().clear();
+
+        if (event.getValue() == null) {
+            unitPricesByItemId.clear();
+            itemsById.clear();
+            rebuildItemCards(itemsSearchField.getValue());
+            return;
+        }
+
+        refreshDefsForWarehouse();
+        rebuildItemCards(itemsSearchField.getValue());
+    }
+
+    private void refreshDefsForWarehouse() {
+        unitPricesByItemId.clear();
+        itemsById.clear();
+
+        Warehouse wh = warehouseCombo.getValue();
+        if (wh == null || wh.getId() == null) return;
+
+        List<ItemUnitPrice> defs = dataManager.load(ItemUnitPrice.class)
+                .query("select iup from ItemUnitPrice iup " +
+                        "join fetch iup.item " +
+                        "join fetch iup.unit " +
+                        "where iup.warehouse.id = :whId")
+                .parameter("whId", wh.getId())
+                .list();
+
+        for (ItemUnitPrice iup : defs) {
+            if (iup.getItem() == null || iup.getUnit() == null) continue;
+            Long itemId = iup.getItem().getId();
+            if (itemId == null) continue;
+
+            unitPricesByItemId.computeIfAbsent(itemId, k -> new ArrayList<>()).add(iup);
+            itemsById.putIfAbsent(itemId, iup.getItem());
+        }
+    }
+
+    // ================== Cards ==================
 
     private void rebuildItemCards(String filter) {
         itemsCardsContainer.removeAll();
 
-        // add custom card first (make it full row using CSS class)
-        customItemCard.addClassName("custom-full");
-        customItemCard.addClassName("item-card");
+        // always show custom card
         itemsCardsContainer.add(customItemCard);
 
-        String normalized = (filter == null) ? "" : filter.trim().toLowerCase();
+        // no warehouse => only custom card
+        if (warehouseCombo.getValue() == null) return;
 
-        List<Item> filtered = itemsDc.getItems().stream()
-                .filter(item -> {
+        String normalized = filter == null ? "" : filter.trim().toLowerCase();
+
+        List<Item> filtered = itemsById.values().stream()
+                .filter(it -> {
                     if (normalized.isEmpty()) return true;
-                    String name = item.getName();
+                    String name = it.getName();
                     return name != null && name.toLowerCase().contains(normalized);
                 })
+                .sorted(Comparator.comparing(i -> i.getName() == null ? "" : i.getName()))
                 .collect(Collectors.toList());
 
         for (Item item : filtered) {
@@ -206,30 +209,21 @@ public class LeadDashboardView extends StandardView {
         }
     }
 
-
     private VerticalLayout createItemCard(Item item) {
         VerticalLayout card = uiComponents.create(VerticalLayout.class);
         card.setWidthFull();
         card.addClassName("item-card");
-
-        card.setSpacing(false);    // ✅ smaller
-
+        card.setSpacing(false);
         card.addClassNames("border", "rounded-l", "shadow-s");
 
-        // image from Item.image (byte[])
         Image img = uiComponents.create(Image.class);
         byte[] imageBytes = item.getImage();
-
         if (imageBytes != null && imageBytes.length > 0) {
-            StreamResource resource = new StreamResource(
-                    "item.png",
-                    () -> new ByteArrayInputStream(imageBytes)
-            );
+            StreamResource resource = new StreamResource("item.png", () -> new ByteArrayInputStream(imageBytes));
             img.setSrc(resource);
             img.setWidth("100%");
             img.setHeight("70px");
             img.getStyle().set("object-fit", "cover");
-
         } else {
             img.setVisible(false);
         }
@@ -237,25 +231,29 @@ public class LeadDashboardView extends StandardView {
         Span title = uiComponents.create(Span.class);
         title.setText(item.getName() != null ? item.getName() : "(no name)");
 
-        Span desc = uiComponents.create(Span.class);
-        desc.setText(messageBundle.getMessage("LeadDashboardView.itemFromCatalog"));
+        HorizontalLayout buttonsRow = uiComponents.create(HorizontalLayout.class);
+        buttonsRow.setSpacing(true);
 
-        Button addBtn = uiComponents.create(Button.class);
-        addBtn.setText(messageBundle.getMessage("LeadDashboardView.addButton"));
+        List<ItemUnitPrice> defs = unitPricesByItemId.getOrDefault(item.getId(), List.of());
+        for (ItemUnitPrice iup : defs) {
+            String unitName = (iup.getUnit() != null && iup.getUnit().getName() != null)
+                    ? iup.getUnit().getName()
+                    : "Unit";
 
-        addBtn.getElement().getThemeList().add("small");
+            Button unitBtn = uiComponents.create(Button.class);
+            unitBtn.setText(unitName + " +");
+            unitBtn.getElement().getThemeList().add("small");
+            unitBtn.addClickListener(e -> addOrIncreaseCatalogItem(iup));
+            buttonsRow.add(unitBtn);
+        }
 
-        addBtn.addClickListener(e -> addOrIncreaseItem(item.getName()));
-
-        card.add(img, title, desc, addBtn);
+        card.add(img, title, buttonsRow);
         return card;
     }
 
-    // ========== SEARCH ==========
-
+    // Search
     @Subscribe("itemsSearchField")
-    public void onItemsSearchFieldValueChange(
-            ComponentValueChangeEvent<TypedTextField<String>, String> event) {
+    public void onItemsSearchFieldValueChange(ComponentValueChangeEvent<TypedTextField<String>, String> event) {
         rebuildItemCards(event.getValue());
     }
 
@@ -264,17 +262,12 @@ public class LeadDashboardView extends StandardView {
         rebuildItemCards(itemsSearchField.getValue());
     }
 
-    // ========== HELPERS FOR TYPES ==========
+    // ========== cart helpers ==========
 
     private int safeInt(Object value) {
-        if (value instanceof Number) {
-            return ((Number) value).intValue();
-        }
-        if (value instanceof String) {
-            try {
-                return Integer.parseInt((String) value);
-            } catch (NumberFormatException ignored) {
-            }
+        if (value instanceof Number) return ((Number) value).intValue();
+        if (value instanceof String s) {
+            try { return Integer.parseInt(s); } catch (NumberFormatException ignored) {}
         }
         return 0;
     }
@@ -287,24 +280,30 @@ public class LeadDashboardView extends StandardView {
         e.setValue("quantity", String.valueOf(qty));
     }
 
-    // ========== QUICK ITEMS TABLE LOGIC ==========
+    // add catalog row
+    private void addOrIncreaseCatalogItem(ItemUnitPrice iup) {
+        String itemName = (iup.getItem() != null) ? iup.getItem().getName() : "(no name)";
+        String unitName = (iup.getUnit() != null) ? iup.getUnit().getName() : null;
+        String iupId = (iup.getId() != null) ? iup.getId().toString() : null;
+        addOrIncreaseRow(itemName, unitName, iupId);
+    }
 
-    private void addOrIncreaseItem(String itemName) {
-        final String warehouseName =
-                (warehouseCombo != null && warehouseCombo.getValue() != null)
-                        ? warehouseCombo.getValue().getName()
-                        : null;
+    private void addOrIncreaseCustomItem(String name) {
+        addOrIncreaseRow(name, null, null);
+    }
 
-        final String projectName =
-                (projectCombo != null && projectCombo.getValue() != null)
-                        ? projectCombo.getValue().getName()
-                        : null;
+    private void addOrIncreaseRow(String itemName, String unitName, String itemUnitPriceId) {
+        final String warehouseName = (warehouseCombo.getValue() != null) ? warehouseCombo.getValue().getName() : null;
+        final String projectName = (projectCombo.getValue() != null) ? projectCombo.getValue().getName() : null;
 
         KeyValueEntity existing = quickItemsDc.getItems().stream()
                 .filter(e ->
                         Objects.equals(itemName, safeString(e.getValue("item"))) &&
+                                Objects.equals(unitName, safeString(e.getValue("unit"))) &&
+                                Objects.equals(itemUnitPriceId, safeString(e.getValue("itemUnitPriceId"))) &&
                                 Objects.equals(warehouseName, safeString(e.getValue("warehouse"))) &&
-                                Objects.equals(projectName, safeString(e.getValue("project"))))
+                                Objects.equals(projectName, safeString(e.getValue("project")))
+                )
                 .findFirst()
                 .orElse(null);
 
@@ -315,6 +314,8 @@ public class LeadDashboardView extends StandardView {
         } else {
             KeyValueEntity entity = new KeyValueEntity();
             entity.setValue("item", itemName);
+            entity.setValue("unit", unitName);
+            entity.setValue("itemUnitPriceId", itemUnitPriceId);
             entity.setValue("warehouse", warehouseName);
             entity.setValue("project", projectName);
             setQuantity(entity, 1);
@@ -322,27 +323,25 @@ public class LeadDashboardView extends StandardView {
         }
     }
 
-    // ---- custom item card ----
-
+    // custom item
     @Subscribe("customItemNameField")
-    public void onCustomItemNameFieldValueChange(
-            ComponentValueChangeEvent<TypedTextField<String>, String> event) {
+    public void onCustomItemNameFieldValueChange(ComponentValueChangeEvent<TypedTextField<String>, String> event) {
         String value = event.getValue();
-        boolean hasText = value != null && !value.trim().isEmpty();
-        addCustomItemBtn.setEnabled(hasText);
+        addCustomItemBtn.setEnabled(value != null && !value.trim().isEmpty());
     }
 
     @Subscribe("addCustomItemBtn")
     public void onAddCustomItemBtnClick(ClickEvent<Button> event) {
+        if (warehouseCombo.getValue() == null || projectCombo.getValue() == null) {
+            notifications.show(messageBundle.getMessage("LeadDashboardView.selectWarehouseAndProject"));
+            return;
+        }
         String name = customItemNameField.getValue();
         if (name == null || name.trim().isEmpty()) {
             notifications.show(messageBundle.getMessage("LeadDashboardView.enterCustomItemName"));
             return;
         }
-
-        String trimmed = name.trim();
-        addOrIncreaseItem(trimmed);
-
+        addOrIncreaseCustomItem(name.trim());
         customItemNameField.clear();
         addCustomItemBtn.setEnabled(false);
     }
@@ -369,7 +368,8 @@ public class LeadDashboardView extends StandardView {
             return;
         }
         int qty = safeInt(selected.getValue("quantity"));
-        setQuantity(selected, qty - 1);   // ✅ negatives allowed
+        int newQty = Math.max(1, qty - 1);
+        setQuantity(selected, newQty);
         quickItemsDc.replaceItem(selected);
     }
 
@@ -400,37 +400,50 @@ public class LeadDashboardView extends StandardView {
             return;
         }
 
-        // create Order and set warehouse/project
         Order order = dataManager.create(Order.class);
         order.setWarehouse(warehouse);
         order.setProject(project);
-        order.setItems(new java.util.ArrayList<>());
+        order.setItems(new ArrayList<>());
 
         User user = (User) currentAuthentication.getUser();
         order.setUser(user);
 
         for (KeyValueEntity row : quickItemsDc.getItems()) {
             String lineName = safeString(row.getValue("item"));
-            int qtyInt = safeInt(row.getValue("quantity"));
+            String iupIdStr  = safeString(row.getValue("itemUnitPriceId"));
+            int qtyInt = Math.max(1, safeInt(row.getValue("quantity")));
 
             OrderItem line = dataManager.create(OrderItem.class);
-            line.setQuantity(java.math.BigDecimal.valueOf(qtyInt));
+            line.setQuantity(BigDecimal.valueOf(qtyInt));
+            line.setOrder(order);
 
-            Item catalogItem = itemsDc.getItems().stream()
-                    .filter(i -> Objects.equals(i.getName(), lineName))
-                    .findFirst()
-                    .orElse(null);
+            if (iupIdStr != null && !iupIdStr.isBlank()) {
+                try {
+                    Long iupId = Long.parseLong(iupIdStr);
 
-            if (catalogItem != null) {
-                line.setItem(catalogItem);
-                line.setCustomItem(false);
-                line.setCustomName(null);
+                    ItemUnitPrice iup = dataManager.load(ItemUnitPrice.class)
+                            .id(iupId)
+                            .optional()
+                            .orElse(null);
+
+                    if (iup != null && iup.getItem() != null) {
+                        line.setItem(iup.getItem());
+                        line.setCustomItem(false);
+                        line.setCustomName(null);
+                        line.setUnitPriceAtOrder(iup.getPrice()); // ✅ your setter exists
+                    } else {
+                        line.setCustomItem(true);
+                        line.setCustomName(lineName);
+                    }
+                } catch (NumberFormatException ex) {
+                    line.setCustomItem(true);
+                    line.setCustomName(lineName);
+                }
             } else {
                 line.setCustomItem(true);
                 line.setCustomName(lineName);
             }
 
-            line.setOrder(order);
             order.getItems().add(line);
         }
 
@@ -438,6 +451,4 @@ public class LeadDashboardView extends StandardView {
         notifications.show(messageBundle.getMessage("LeadDashboardView.orderSavedSuccessfully"));
         quickItemsDc.getMutableItems().clear();
     }
-
-
 }

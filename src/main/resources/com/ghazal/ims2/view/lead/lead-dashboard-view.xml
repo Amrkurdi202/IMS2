@@ -4,82 +4,52 @@
       focusComponent="attendanceTable">
 
     <data>
-
-        <!-- Attendance records (top table) -->
         <collection id="attendanceDc"
                     class="com.ghazal.ims2.entity.AttendanceRecord"/>
 
-        <!-- Items for cards -->
-        <collection id="itemsDc"
-                    class="com.ghazal.ims2.entity.Item">
-            <fetchPlan extends="_base">
-                <property name="name"/>
-                <property name="image"/>
-            </fetchPlan>
-            <loader id="itemsDl">
-                <query>
-                    <![CDATA[
-                        select i from Item i
-                        order by i.name
-                    ]]>
-                </query>
-            </loader>
-        </collection>
-
-        <!-- Warehouses for comboBox -->
-        <collection id="warehousesDc"
-                    class="com.ghazal.ims2.entity.Warehouse">
+        <collection id="warehousesDc" class="com.ghazal.ims2.entity.Warehouse">
             <fetchPlan extends="_base">
                 <property name="name"/>
             </fetchPlan>
             <loader id="warehousesDl">
-                <query>
-                    <![CDATA[
-                        select w from Warehouse w
-                        order by w.name
-                    ]]>
-                </query>
+                <query><![CDATA[
+                    select w from Warehouse w order by w.name
+                ]]></query>
             </loader>
         </collection>
 
-        <!-- Projects for comboBox -->
-        <collection id="projectsDc"
-                    class="com.ghazal.ims2.entity.Project">
+        <collection id="projectsDc" class="com.ghazal.ims2.entity.Project">
             <fetchPlan extends="_base">
                 <property name="name"/>
             </fetchPlan>
             <loader id="projectsDl">
-                <query>
-                    <![CDATA[
-                        select p from Project p
-                        order by p.name
-                    ]]>
-                </query>
+                <query><![CDATA[
+                    select p from Project p order by p.name
+                ]]></query>
             </loader>
         </collection>
 
-        <!-- Quick items table ("cart") -->
         <keyValueCollection id="quickItemsDc">
             <properties>
-                <property name="item"      type="string"/>
-                <property name="warehouse" type="string"/>
-                <property name="project"   type="string"/>
-                <property name="quantity"  type="string"/>
+                <property name="item"            type="string"/>
+                <property name="unit"            type="string"/>
+                <property name="itemUnitPriceId" type="string"/>
+                <property name="warehouse"       type="string"/>
+                <property name="project"         type="string"/>
+                <property name="quantity"        type="string"/>
             </properties>
         </keyValueCollection>
-
     </data>
 
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+
     <layout>
-        <!-- Root container: full width, good on mobile -->
-        <vbox width="100%"
-              padding="true"
-              spacing="true">
+        <vbox width="100%" padding="true" spacing="true">
 
-            <!-- ======== ATTENDANCE TOP HALF ======== -->
-
-            <details summaryText="msg://com.ghazal.ims2.view.lead/attendanceManagement"
-                     opened="true">
+            <!-- ======== ATTENDANCE ======== -->
+            <details summaryText="msg://com.ghazal.ims2.view.lead/attendanceManagement" opened="true">
                 <vbox spacing="true" width="100%">
 
                     <hbox spacing="true" width="100%">
@@ -89,8 +59,6 @@
                         <button id="breakEndBtn" text="msg://com.ghazal.ims2.view.attendance/breakEnd"   themeNames="small"/>
                     </hbox>
 
-
-                    <!-- show all rows, no inner scrollbar -->
                     <dataGrid id="attendanceTable"
                               dataContainer="attendanceDc"
                               width="100%"
@@ -104,26 +72,19 @@
                 </vbox>
             </details>
 
-            <!-- small gap -->
             <span text="" classNames="mt-s"/>
 
-            <!-- ======== QUICK ITEMS BOTTOM HALF ======== -->
+            <!-- ======== QUICK ITEMS ======== -->
+            <span text="msg://com.ghazal.ims2.view.lead/quickItems" classNames="text-xl font-semibold"/>
 
-            <span text="msg://com.ghazal.ims2.view.lead/quickItems"
-                  classNames="text-xl font-semibold"/>
-
-            <!-- Search bar -->
             <hbox spacing="true" width="100%">
                 <textField id="itemsSearchField"
                            width="100%"
                            placeholder="msg://com.ghazal.ims2.view.lead/searchItems"/>
-                <button id="itemsSearchBtn"
-                        icon="vaadin:search"/>
+                <button id="itemsSearchBtn" icon="vaadin:search"/>
             </hbox>
 
-            <!-- Cards container: first row already contains Custom card -->
-            <div id="itemsCardsContainer"
-                 classNames="items-grid mt-m">
+            <div id="itemsCardsContainer" classNames="items-grid mt-m">
 
                 <vbox id="customItemCard"
                       padding="true"
@@ -143,16 +104,9 @@
                             enabled="false"/>
                 </vbox>
 
-
-
-
             </div>
 
-
-            <!-- Warehouse & Project selection -->
-            <hbox spacing="true"
-                  classNames="mt-m"
-                  width="100%">
+            <hbox spacing="true" classNames="mt-m" width="100%">
                 <comboBox id="warehouseCombo"
                           label="msg://com.ghazal.ims2.view.lead/warehouse"
                           width="100%"/>
@@ -161,20 +115,19 @@
                           width="100%"/>
             </hbox>
 
-            <!-- Quick items table -->
             <dataGrid id="quickItemsTable"
                       dataContainer="quickItemsDc"
                       width="100%"
                       allRowsVisible="true">
                 <columns>
-                    <column property="item"      header="msg://com.ghazal.ims2.view.lead/item"/>
-                    <column property="warehouse" header="msg://com.ghazal.ims2.view.lead/warehouse"/>
-                    <column property="project"   header="msg://com.ghazal.ims2.view.lead/project"/>
-                    <column property="quantity"  header="msg://com.ghazal.ims2.view.lead/qty"/>
+                    <column property="item"      header="Item"/>
+                    <column property="unit"      header="Unit"/>
+                    <column property="quantity"  header="Qty"/>
+                    <column property="warehouse" header="Warehouse"/>
+                    <column property="project"   header="Project"/>
                 </columns>
             </dataGrid>
 
-            <!-- Row actions -->
             <hbox spacing="true" classNames="mt-s">
                 <button id="decreaseQtyBtn" text="msg://com.ghazal.ims2.view.lead/decrease"/>
                 <button id="increaseQtyBtn" text="msg://com.ghazal.ims2.view.lead/increase"/>

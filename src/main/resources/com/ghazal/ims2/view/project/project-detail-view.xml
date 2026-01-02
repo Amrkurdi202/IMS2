@@ -27,9 +27,7 @@
         <formLayout id="form" dataContainer="projectDc">
             <textField id="nameField"
                        property="name"
-                       required="true"
-
-            />
+                       required="true"/>
             <vbox>
                 <image id="image" property="image" dataContainer="projectDc"/>
                 <fileUploadField
@@ -43,9 +41,9 @@
 
         <vbox width="100%">
             <hbox classNames="buttons-panel">
-                <button action="roomsDataGrid.create"/>
-                <button action="roomsDataGrid.edit"/>
-                <button action="roomsDataGrid.remove"/>
+                <button id="roomsCreateBtn" action="roomsDataGrid.create"/>
+                <button id="roomsEditBtn" action="roomsDataGrid.edit"/>
+                <button id="roomsRemoveBtn" action="roomsDataGrid.remove"/>
             </hbox>
 
             <dataGrid id="roomsDataGrid"
