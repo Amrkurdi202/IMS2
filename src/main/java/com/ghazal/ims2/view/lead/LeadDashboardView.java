@@ -120,15 +120,15 @@ public class LeadDashboardView extends StandardView {
         handleAttendanceAction(AttendanceAction.OUT, "Checked OUT");
     }
 
-    @Subscribe("breakBtn")
-    public void onBreakBtnClick(ClickEvent<Button> event) {
-        handleAttendanceAction(AttendanceAction.BREAK, "Break started");
-    }
-
-    @Subscribe("breakEndBtn")
-    public void onBreakEndBtnClick(ClickEvent<Button> event) {
-        handleAttendanceAction(AttendanceAction.BREAK_END, "Break ended");
-    }
+//    @Subscribe("breakBtn")
+//    public void onBreakBtnClick(ClickEvent<Button> event) {
+//        handleAttendanceAction(AttendanceAction.BREAK, "Break started");
+//    }
+//
+//    @Subscribe("breakEndBtn")
+//    public void onBreakEndBtnClick(ClickEvent<Button> event) {
+//        handleAttendanceAction(AttendanceAction.BREAK_END, "Break ended");
+//    }
 
     private void handleAttendanceAction(AttendanceAction action, String successMessage) {
         try {

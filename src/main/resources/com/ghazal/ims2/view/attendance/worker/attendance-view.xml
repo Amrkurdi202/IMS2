@@ -15,8 +15,8 @@
         <hbox>
             <button id="inButton" text="msg://com.ghazal.ims2.view.attendance/in"/>
             <button id="outButton" text="msg://com.ghazal.ims2.view.attendance/out"/>
-            <button id="breakButton" text="msg://com.ghazal.ims2.view.attendance/breakStart"/>
-            <button id="breakEndButton" text="msg://com.ghazal.ims2.view.attendance/breakEnd"/>
+<!--            <button id="breakButton" text="msg://com.ghazal.ims2.view.attendance/breakStart"/>-->
+<!--            <button id="breakEndButton" text="msg://com.ghazal.ims2.view.attendance/breakEnd"/>-->
         </hbox>
 
         <dataGrid id="attendanceGrid"

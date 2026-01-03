@@ -55,15 +55,15 @@ public class AttendanceView extends StandardView {
         handleAction(AttendanceAction.OUT, "Checked OUT");
     }
 
-    @Subscribe("breakButton")
-    public void onBreakButtonClick(ClickEvent<JmixButton> event) {
-        handleAction(AttendanceAction.BREAK, "Break started");
-    }
-
-    @Subscribe("breakEndButton")
-    public void onBreakEndButtonClick(ClickEvent<JmixButton> event) {
-        handleAction(AttendanceAction.BREAK_END, "Break ended");
-    }
+//    @Subscribe("breakButton")
+//    public void onBreakButtonClick(ClickEvent<JmixButton> event) {
+//        handleAction(AttendanceAction.BREAK, "Break started");
+//    }
+//
+//    @Subscribe("breakEndButton")
+//    public void onBreakEndButtonClick(ClickEvent<JmixButton> event) {
+//        handleAction(AttendanceAction.BREAK_END, "Break ended");
+//    }
 
     private void handleAction(AttendanceAction action, String successMessage) {
         try {
