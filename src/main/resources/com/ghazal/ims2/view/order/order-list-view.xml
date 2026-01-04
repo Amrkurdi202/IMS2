@@ -42,6 +42,7 @@
             <button id="createButton" action="ordersDataGrid.create"/>
             <button id="editButton" action="ordersDataGrid.edit"/>
             <button id="removeButton" action="ordersDataGrid.remove"/>
+            <button id="exportPdfBtn" text="Export PDF / تصدير PDF" icon="PRINT"/>
             <simplePagination id="pagination" dataLoader="ordersDl"/>
         </hbox>
 

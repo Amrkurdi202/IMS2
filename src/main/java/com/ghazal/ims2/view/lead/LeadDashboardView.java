@@ -428,9 +428,10 @@ public class LeadDashboardView extends StandardView {
 
                     if (iup != null && iup.getItem() != null) {
                         line.setItem(iup.getItem());
+                        line.setUnit(iup.getUnit()); // ✅ Set unit from ItemUnitPrice
                         line.setCustomItem(false);
                         line.setCustomName(null);
-                        line.setUnitPriceAtOrder(iup.getPrice()); // ✅ your setter exists
+                        line.setUnitPriceAtOrder(iup.getPrice());
                     } else {
                         line.setCustomItem(true);
                         line.setCustomName(lineName);

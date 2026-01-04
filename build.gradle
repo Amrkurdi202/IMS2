@@ -40,6 +40,10 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // PDF generation with Arabic support
+    implementation 'com.github.librepdf:openpdf:2.0.2'
+    implementation 'com.ibm.icu:icu4j:74.2' // For proper Arabic text shaping
+
 
     runtimeOnly "org.mariadb.jdbc:mariadb-java-client:3.5.7";
 

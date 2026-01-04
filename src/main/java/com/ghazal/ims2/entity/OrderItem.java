@@ -20,6 +20,10 @@ public class OrderItem {
     @JoinColumn(name = "ITEM_ID")   // nullable => can be null for custom items
     private Item item;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "UNIT_ID")   // nullable => can be null for custom items
+    private Unit unit;
+
     @Column(name = "QUANTITY", nullable = false)
     private BigDecimal quantity;
 
@@ -63,6 +67,15 @@ public class OrderItem {
 
     public OrderItem setItem(Item item) {
         this.item = item;
+        return this;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public OrderItem setUnit(Unit unit) {
+        this.unit = unit;
         return this;
     }
 

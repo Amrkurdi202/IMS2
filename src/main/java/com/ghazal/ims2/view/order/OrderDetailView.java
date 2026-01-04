@@ -4,6 +4,7 @@ import com.ghazal.ims2.entity.Item;
 import com.ghazal.ims2.entity.ItemUnitPrice;
 import com.ghazal.ims2.entity.Order;
 import com.ghazal.ims2.entity.OrderItem;
+import com.ghazal.ims2.entity.Unit;
 import com.ghazal.ims2.entity.User;
 import com.ghazal.ims2.entity.Warehouse;
 import com.ghazal.ims2.view.AutoSaveDetailView;
@@ -169,8 +170,9 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
                 item.setCustomItem(value);
 
                 if (Boolean.TRUE.equals(value)) {
-                    // custom item => no catalog item, no stored unit price
+                    // custom item => no catalog item, no unit, no stored unit price
                     item.setItem(null);
+                    item.setUnit(null);
                     item.setUnitPriceAtOrder(null);
                     item.setCustomName("");
                     addItemBtn.setText("Add +");
@@ -203,7 +205,7 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
     }
 
     // -----------------------------------------------------
-    // 5) ✅ Item editor: choose from ItemUnitPrice filtered by warehouse
+    // 5) ✅ Item-Unit combo: choose from ItemUnitPrice (Item - Unit)
     // -----------------------------------------------------
     @Supply(to = "itemsDataGrid.item", subject = "editorComponent")
     private Component itemsDataGridItemEditorComponent() {
@@ -211,41 +213,49 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
         ComboBox<ItemUnitPrice> cb = uiComponents.create(ComboBox.class);
         cb.setClearButtonVisible(true);
 
+        // Show "Item Name - Unit Name" without price
         cb.setItemLabelGenerator(iup ->
-                iup.getItem().getName() + " | " +
-                        iup.getUnit().getName() + " | " +
-                        iup.getPrice()
+                iup.getItem().getName() + " - " + iup.getUnit().getName()
         );
 
-        Warehouse wh = warehouseField.getValue();
-        if (wh == null) {
-            cb.setItems(Collections.emptyList());
-            cb.setPlaceholder("Select warehouse first");
-            cb.setReadOnly(true);
-            return cb;
-        }
-
-        List<ItemUnitPrice> available = dataManager.load(ItemUnitPrice.class)
-                .query("select iup from ItemUnitPrice iup " +
-                        "where iup.warehouse = :wh " +
-                        "and iup.unit is not null " +
-                        "order by iup.item.name")
-                .parameter("wh", wh)
-                .list();
-
-        cb.setItems(available);
-
-        // preselect current value (if any)
-        if (itemsDataGrid.getEditor().isOpen()) {
-            OrderItem line = itemsDataGrid.getEditor().getItem();
-            Item currentItem = line.getItem();
-            if (currentItem != null) {
-                available.stream()
-                        .filter(iup -> iup.getItem() != null && iup.getItem().equals(currentItem))
-                        .findFirst()
-                        .ifPresent(cb::setValue);
+        // Refresh items when combo box is attached (when editor opens)
+        cb.addAttachListener(attachEvent -> {
+            Warehouse wh = warehouseField.getValue();
+            if (wh == null) {
+                cb.setItems(Collections.emptyList());
+                cb.setPlaceholder("Select warehouse first");
+                cb.setReadOnly(true);
+                return;
             }
-        }
+
+            cb.setReadOnly(false);
+            cb.setPlaceholder(null);
+
+            // Load ItemUnitPrice for selected warehouse
+            List<ItemUnitPrice> available = dataManager.load(ItemUnitPrice.class)
+                    .query("select iup from ItemUnitPrice iup " +
+                            "where iup.warehouse = :wh " +
+                            "and iup.unit is not null " +
+                            "order by iup.item.name, iup.unit.name")
+                    .parameter("wh", wh)
+                    .list();
+
+            cb.setItems(available);
+
+            // preselect current value (if any)
+            if (itemsDataGrid.getEditor().isOpen()) {
+                OrderItem line = itemsDataGrid.getEditor().getItem();
+                Item currentItem = line.getItem();
+                Unit currentUnit = line.getUnit();
+
+                if (currentItem != null && currentUnit != null) {
+                    available.stream()
+                            .filter(iup -> iup.getItem().equals(currentItem) && iup.getUnit().equals(currentUnit))
+                            .findFirst()
+                            .ifPresent(cb::setValue);
+                }
+            }
+        });
 
         cb.addValueChangeListener(e -> {
             if (!itemsDataGrid.getEditor().isOpen()) return;
@@ -255,10 +265,13 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
 
             if (iup == null) {
                 line.setItem(null);
+                line.setUnit(null);
                 line.setUnitPriceAtOrder(null);
                 addItemBtn.setText("Add +");
             } else {
+                // Set both item and unit from ItemUnitPrice
                 line.setItem(iup.getItem());
+                line.setUnit(iup.getUnit());
                 line.setUnitPriceAtOrder(iup.getPrice());
                 addItemBtn.setText(iup.getUnit().getName() + " +");
             }
@@ -270,7 +283,7 @@ public class OrderDetailView extends AutoSaveDetailView<Order> {
     }
 
     // -----------------------------------------------------
-    // 6) Save & close
+    // 8) Save & close
     // -----------------------------------------------------
     @Subscribe(id = "saveAndCloseButton", subject = "clickListener")
     public void onSaveAndCloseButtonClick(ClickEvent<JmixButton> event) {

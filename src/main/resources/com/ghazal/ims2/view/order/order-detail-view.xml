@@ -14,9 +14,13 @@
                         <property name="name"/>
                         <property name="image"/>
                     </property>
+                    <property name="unit">
+                        <property name="name"/>
+                    </property>
                     <property name="customItem"/>
                     <property name="customName"/>
                     <property name="quantity"/>
+                    <property name="unitPriceAtOrder"/>
                 </property>
             </fetchPlan>
 
@@ -91,8 +95,11 @@
                     </actions>
 
                     <columns>
-                        <!-- Normal catalog item -->
+                        <!-- Item-Unit combo (shows "Item - Unit") -->
                         <column property="item" editable="true"/>
+
+                        <!-- Unit (display only, set by item selection) -->
+                        <column property="unit" editable="false"/>
 
                         <!-- Is this a custom ad-hoc item? -->
                         <column property="customItem" header="msg://com.ghazal.ims2.view.order/customColumn" editable="true"/>
@@ -102,6 +109,9 @@
 
                         <!-- Quantity (for normal items) or price (for custom items) -->
                         <column property="quantity" header="msg://com.ghazal.ims2.view.order/qtyPriceColumn" editable="true"/>
+
+                        <!-- Price at time of order (display only) -->
+                        <column property="unitPriceAtOrder" editable="false"/>
 
                         <editorActionsColumn>
                             <editButton icon="PENCIL"/>
