@@ -1,88 +1,44 @@
-html,
-body {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-}
-
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    min-width: 0;
-    max-width: 100%;
-}
-
+/* 2 cards per row */
 .items-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: clamp(8px, 3vw, 12px);
-    width: 100%;
-    max-width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
 }
 
+/* Card style (compact + prevents overflow) */
 .item-card {
-    padding: clamp(8px, 2.5vw, 10px);
+    padding: 10px;
     border-radius: 10px;
-    min-width: 0;
-    max-width: 100%;
+    min-width: 0;      /* IMPORTANT: prevents inputs/text from overflowing */
     overflow: hidden;
 }
 
+/* Card image */
 .item-card img {
     width: 100%;
-    height: clamp(80px, 18vw, 110px);
+    height: 110px;
     object-fit: cover;
     border-radius: 8px;
 }
 
+/* Custom card should take the full row */
 .custom-full {
     grid-column: 1 / -1;
 }
 
-.item-card p,
-.item-card span,
-.item-card div,
-.item-card h1,
-.item-card h2,
-.item-card h3,
-.item-card h4,
-.item-card h5,
-.item-card h6 {
-    overflow-wrap: anywhere;
-    word-break: break-word;
+/* Mobile tweaks */
+@media (max-width: 600px) {
+    .items-grid { gap: 8px; }
+    .item-card { padding: 8px; }
+    .item-card img { height: 90px; }
 }
 
-.item-card input,
-.item-card select,
-.item-card textarea,
-.item-card button {
-    width: 100%;
-    max-width: 100%;
-}
-
-.item-card vaadin-text-field,
-.item-card vaadin-password-field,
-.item-card vaadin-email-field,
-.item-card vaadin-number-field,
-.item-card vaadin-text-area,
-.item-card vaadin-combo-box,
-.item-card vaadin-select,
-.item-card vaadin-date-picker,
-.item-card vaadin-time-picker,
-.item-card vaadin-button {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
+/* Super tiny phones: 1 column */
+@media (max-width: 360px) {
+    .items-grid { grid-template-columns: 1fr; }
 }
 
 vaadin-horizontal-layout {
     display: flex;
     flex-wrap: wrap;
-}
-
-@media (max-width: 600px) {
-    .items-grid {
-        grid-template-columns: 1fr;
-    }
 }
