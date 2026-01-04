@@ -1,50 +1,50 @@
-    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-    <view xmlns="http://jmix.io/schema/flowui/view"
-          title="msg://WarehouseDetailView.title"
-          focusComponent="form">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://WarehouseDetailView.title"
+      focusComponent="form">
 
-        <data>
-            <instance id="warehouseDc"
-                      class="com.ghazal.ims2.entity.Warehouse">
-                <fetchPlan extends="_base">
-                    <property name="name"/>
-                    <property name="internal"/>
-                    <property name="image"/>
-                </fetchPlan>
-                <loader/>
-            </instance>
-        </data>
+    <data>
+        <instance id="warehouseDc"
+                  class="com.ghazal.ims2.entity.Warehouse">
+            <fetchPlan extends="_base">
+                <property name="name"/>
+                <property name="internal"/>
+                <property name="image"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+    </data>
 
-        <actions>
-            <action id="closeAction" type="detail_discard"/>
-        </actions>
+    <actions>
+        <action id="closeAction" type="detail_discard"/>
+    </actions>
 
-        <facets>
-            <dataLoadCoordinator auto="true"/>
-        </facets>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
 
-        <layout>
-            <formLayout id="form" dataContainer="warehouseDc">
-                <textField id="nameField" property="name" required="true"/>
+    <layout>
+        <formLayout id="form" dataContainer="warehouseDc">
+            <textField id="nameField" property="name" required="true"/>
 
-                <comboBox id="internalField"
-                          property="internal"
-                          label="msg://com.ghazal.ims2.view.report/warehouseType"
-                          required="true"/>
+            <comboBox id="internalField"
+                      property="internal"
+                      label="msg://com.ghazal.ims2.view.report/warehouseType"
+                      required="true"/>
 
-                <vbox>
-                    <image id="image" property="image" dataContainer="warehouseDc"/>
-                    <fileUploadField id="imageField"
-                                     dataContainer="warehouseDc"
-                                     property="image"
-                                     clearButtonVisible="true"
-                                     fileNameVisible="true"/>
-                </vbox>
-            </formLayout>
+            <vbox>
+                <image id="image" property="image" dataContainer="warehouseDc"/>
+                <fileUploadField id="imageField"
+                                 dataContainer="warehouseDc"
+                                 property="image"
+                                 clearButtonVisible="true"
+                                 fileNameVisible="true"/>
+            </vbox>
+        </formLayout>
 
-            <hbox id="detailActions">
-                <button id="saveAndCloseButton" text="msg://common.ok"/>
-                <button id="closeButton" action="closeAction"/>
-            </hbox>
-        </layout>
-    </view>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" text="msg://common.ok"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>
