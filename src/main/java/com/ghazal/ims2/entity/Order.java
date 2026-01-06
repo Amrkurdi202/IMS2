@@ -10,20 +10,19 @@ import java.util.List;
 @Entity(name = "ims_Order")
 @Table(name = "ims_order")
 public class Order extends BaseEntity {
-    @InstanceName
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @InstanceName
     @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY)
     private Warehouse warehouse;
 
-    @InstanceName
     @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY)
     private Project project;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 
@@ -66,7 +65,14 @@ public class Order extends BaseEntity {
         return this;
     }
 
+    @InstanceName
+    public String getInstanceName() {
+        Object id = getId();
+        return id == null ? "Order" : "Order " + id;
+    }
+
+    @Override
     public String toString() {
-        return "Order(user=" + this.getUser() + ", warehouse=" + this.getWarehouse() + ", project=" + this.getProject() + ", items=" + this.getItems() + ")";
+        return getInstanceName();
     }
 }

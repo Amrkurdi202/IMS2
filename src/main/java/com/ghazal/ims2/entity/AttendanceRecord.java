@@ -1,5 +1,6 @@
 package com.ghazal.ims2.entity;
 
+import com.ghazal.ims2.entity.Project;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
@@ -30,6 +31,10 @@ public class AttendanceRecord {
     @Column(name = "TIME")
     private LocalTime time;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROJECT_ID")
+    private Project project;
+
     // 🔹 12-hour formatter
     private static final DateTimeFormatter TWELVE_H =
             DateTimeFormatter.ofPattern("hh:mm a");
@@ -46,7 +51,9 @@ public class AttendanceRecord {
 
     @InstanceName
     public String getDisplayName() {
-        return action + " at " + time;
+        String projectName = (project != null && project.getName() != null) ? project.getName() : "";
+        String timeStr = (time != null) ? time.toString() : "";
+        return action + " at " + timeStr + (projectName.isEmpty() ? "" : " - " + projectName);
     }
 
     // Getters & Setters
@@ -61,4 +68,7 @@ public class AttendanceRecord {
 
     public LocalTime getTime() { return time; }
     public void setTime(LocalTime time) { this.time = time; }
+
+    public Project getProject() { return project; }
+    public void setProject(Project project) { this.project = project; }
 }

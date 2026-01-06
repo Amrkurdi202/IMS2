@@ -7,7 +7,9 @@
     <data>
         <collection id="attendanceRecordsDc"
                     class="com.ghazal.ims2.entity.AttendanceRecord">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="project" fetchPlan="_instance_name"/>
+            </fetchPlan>
             <loader id="attendanceRecordsDl">
                 <query>
                     <![CDATA[
@@ -64,9 +66,10 @@
             </actions>
 
             <columns resizable="true">
-                <!-- both are editable inline -->
+                <!-- all three are editable inline -->
                 <column property="action" editable="true"/>
                 <column property="time" editable="true"/>
+                <column property="project" editable="true"/>
 
                 <editorActionsColumn width="8em" flexGrow="0">
                     <editButton text="msg://common.edit"/>

@@ -3,6 +3,7 @@ package com.ghazal.ims2.service;
 import com.ghazal.ims2.entity.AttendanceAction;
 import com.ghazal.ims2.entity.AttendanceDay;
 import com.ghazal.ims2.entity.AttendanceRecord;
+import com.ghazal.ims2.entity.Project;
 import com.ghazal.ims2.entity.User;
 import io.jmix.core.DataManager;
 import io.jmix.core.security.CurrentAuthentication;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -31,11 +33,13 @@ public class AttendanceService {
      * 3) Break actions allowed only when OUT is allowed (i.e. #IN != #OUT)
      * 4) BREAK  allowed only when #BREAK == #BREAK_END  (no active break)
      * 5) BREAK_END allowed only when #BREAK != #BREAK_END (there is active break)
+     * 6) Project is required for IN action
+     * 7) Project is auto-filled from most recent IN for other actions
      *
      * If a rule is violated it throws IllegalStateException with a message
      * which AttendanceView shows as a notification.
      */
-    public void markAction(AttendanceAction action) {
+    public void markAction(AttendanceAction action, Project selectedProject) {
         User currentUser = (User) currentAuth.getUser();
         AttendanceDay todayDay = getOrCreateToday(currentUser);
 
@@ -59,6 +63,10 @@ public class AttendanceService {
             case IN -> {
                 if (!inAllowedNow) {
                     throw new IllegalStateException("You must check OUT before checking IN again.");
+                }
+                // Validate that project is selected for IN action
+                if (selectedProject == null) {
+                    throw new IllegalStateException("Please select a project before checking IN.");
                 }
             }
             case OUT -> {
@@ -92,7 +100,30 @@ public class AttendanceService {
         record.setAction(action);
         record.setTime(LocalTime.now());
 
+        // Set project based on action type
+        if (action == AttendanceAction.IN) {
+            // For IN: use the selected project from UI
+            record.setProject(selectedProject);
+        } else {
+            // For OUT/BREAK/BREAK_END: auto-use project from most recent IN
+            Project activeProject = getActiveProject(todayRecords);
+            record.setProject(activeProject);
+        }
+
         dataManager.save(record);
+    }
+
+    /**
+     * Returns the project from the most recent IN record for today.
+     * Used to auto-populate project for OUT/BREAK/BREAK_END actions.
+     * Returns null if no IN record exists today.
+     */
+    private Project getActiveProject(List<AttendanceRecord> todayRecords) {
+        return todayRecords.stream()
+                .filter(r -> r.getAction() == AttendanceAction.IN)
+                .max(Comparator.comparing(AttendanceRecord::getTime))
+                .map(AttendanceRecord::getProject)
+                .orElse(null);
     }
 
     private AttendanceDay getOrCreateToday(User user) {

@@ -2,7 +2,6 @@ package com.ghazal.ims2.service.report;
 
 import com.ghazal.ims2.entity.Item;
 import com.ghazal.ims2.entity.ItemUnitPrice;
-import com.ghazal.ims2.entity.Order;
 import com.ghazal.ims2.entity.OrderItem;
 import com.ghazal.ims2.entity.Project;
 import com.ghazal.ims2.entity.ProjectPoint;
@@ -33,10 +32,6 @@ public class ProjectCostReportService {
             BigDecimal pointValue
     ) {
 
-        // -------------------------------------------------
-        // A) Total points for the project
-        //    = sum of ProjectPoint.quantity for all rooms
-        // -------------------------------------------------
         BigDecimal totalPoints = BigDecimal.ZERO;
 
         if (project.getRooms() != null) {
@@ -45,7 +40,6 @@ public class ProjectCostReportService {
                 if (roomPoints == null) {
                     continue;
                 }
-
                 for (ProjectPoint projectPoint : roomPoints) {
                     BigDecimal qty = projectPoint.getQuantity();
                     if (qty != null) {
@@ -57,24 +51,20 @@ public class ProjectCostReportService {
 
         BigDecimal pointsCost = totalPoints.multiply(pointValue);
 
-        // -------------------------------------------------
-        // B) Amount client should pay from orders
-        // -------------------------------------------------
-
-        // NOTE: Order entity is @Entity(name = "ims_Order"), so we use ims_Order here.
-        // TODO: replace "o.date" with your actual order date field if different.
         StringBuilder jpql = new StringBuilder(
-                "select o from ims_Order o " +
-                        "where o.project = :project " +
-                        "and o.createdDate >= :fromDate " +
-                        "and o.createdDate <= :toDate"
+                "select oi from ORDER_ITEM oi " +
+                        "left join fetch oi.item " +
+                        "left join fetch oi.unit " +
+                        "where oi.order.project = :project " +
+                        "and oi.order.createdDate >= :fromDate " +
+                        "and oi.order.createdDate <= :toDate"
         );
 
         if (warehouse != null) {
-            jpql.append(" and o.warehouse = :warehouse");
+            jpql.append(" and oi.order.warehouse = :warehouse");
         }
 
-        var loader = dataManager.load(Order.class)
+        var loader = dataManager.load(OrderItem.class)
                 .query(jpql.toString())
                 .parameter("project", project)
                 .parameter("fromDate", fromDate)
@@ -84,51 +74,40 @@ public class ProjectCostReportService {
             loader.parameter("warehouse", warehouse);
         }
 
-        List<Order> orders = loader.list();
+        List<OrderItem> orderItems = loader.list();
 
         BigDecimal clientAmount = BigDecimal.ZERO;
 
-        for (Order order : orders) {
-            if (order.getItems() == null) {
+        for (OrderItem orderItem : orderItems) {
+            BigDecimal quantity = orderItem.getQuantity();
+            if (quantity == null) {
                 continue;
             }
 
-            for (OrderItem orderItem : order.getItems()) {
-                BigDecimal quantity = orderItem.getQuantity();
+            BigDecimal unitPrice = orderItem.getUnitPriceAtOrder();
+
+            if (unitPrice == null) {
                 Item item = orderItem.getItem();
-
-                if (quantity == null || item == null) {
-                    continue;
+                if (item != null && warehouse != null) {
+                    unitPrice = findItemUnitPrice(item, warehouse);
                 }
-
-                // 1) Prefer the frozen price stored on the order item
-                BigDecimal unitPrice = orderItem.getUnitPriceAtOrder();
-
-                // 2) Fallback for older data where unitPriceAtOrder is null
-                if (unitPrice == null) {
-                    unitPrice = findItemUnitPrice(item, order.getWarehouse());
-                }
-
-                if (unitPrice == null) {
-                    // still no price → skip this line
-                    continue;
-                }
-
-                clientAmount = clientAmount.add(quantity.multiply(unitPrice));
             }
+
+            if (unitPrice == null) {
+                continue;
+            }
+
+            clientAmount = clientAmount.add(quantity.multiply(unitPrice));
         }
 
         return new ProjectCostReportResult(
                 totalPoints,
                 pointsCost,
-                clientAmount
+                clientAmount,
+                orderItems
         );
     }
 
-    /**
-     * Finds the current price for the given item in the given warehouse
-     * using ItemUnitPrice. Used as a fallback when unitPriceAtOrder is null.
-     */
     @Nullable
     private BigDecimal findItemUnitPrice(Item item, @Nullable Warehouse warehouse) {
         if (warehouse == null) {
@@ -136,8 +115,7 @@ public class ProjectCostReportService {
         }
 
         List<ItemUnitPrice> prices = dataManager.load(ItemUnitPrice.class)
-                .query("select p from ItemUnitPrice p " +
-                        "where p.item = :item and p.warehouse = :warehouse")
+                .query("select p from ItemUnitPrice p where p.item = :item and p.warehouse = :warehouse")
                 .parameter("item", item)
                 .parameter("warehouse", warehouse)
                 .list();

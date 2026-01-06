@@ -3,10 +3,12 @@ package com.ghazal.ims2.entity;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import io.jmix.core.metamodel.annotation.JmixProperty;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @JmixEntity
 @Entity
@@ -87,5 +89,23 @@ public class AttendanceDay {
         }
     }
 
+    /**
+     * Returns a comma-separated list of unique project names worked on this day
+     */
+    @Transient
+    @JmixProperty
+    public String getProjectsNames() {
+        if (records == null || records.isEmpty()) {
+            return "";
+        }
+
+        return records.stream()
+                .map(AttendanceRecord::getProject)
+                .filter(project -> project != null)
+                .map(Project::getName)
+                .distinct()
+                .sorted()
+                .collect(Collectors.joining(", "));
+    }
 
 }

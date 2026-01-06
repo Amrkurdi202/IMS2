@@ -52,6 +52,13 @@
             <details summaryText="msg://com.ghazal.ims2.view.lead/attendanceManagement" opened="true">
                 <vbox spacing="true" width="100%">
 
+                    <entityComboBox id="attendanceProjectField"
+                                    label="msg://com.ghazal.ims2.view.attendance/project"
+                                    metaClass="Project"
+                                    itemsContainer="projectsDc"
+                                    itemLabelGenerator="name"
+                                    width="20em"/>
+
                     <hbox spacing="true" width="100%">
                         <button id="inBtn"       text="msg://com.ghazal.ims2.view.attendance/in"          themeNames="primary small"/>
                         <button id="outBtn"      text="msg://com.ghazal.ims2.view.attendance/out"         themeNames="small"/>
@@ -66,6 +73,7 @@
                         <columns>
                             <column property="action"/>
                             <column property="time"/>
+                            <column property="project.name" header="msg://com.ghazal.ims2.view.attendance/project"/>
                         </columns>
                     </dataGrid>
 

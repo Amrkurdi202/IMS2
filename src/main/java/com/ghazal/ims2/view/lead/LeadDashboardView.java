@@ -14,10 +14,12 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import io.jmix.core.DataManager;
+import io.jmix.core.Messages;
 import io.jmix.core.entity.KeyValueEntity;
 import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.UiComponents;
+import io.jmix.flowui.component.combobox.EntityComboBox;
 import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.component.textfield.TypedTextField;
@@ -43,9 +45,12 @@ public class LeadDashboardView extends StandardView {
     @Autowired private DataManager dataManager;
     @Autowired private CurrentAuthentication currentAuthentication;
     @Autowired private MessageBundle messageBundle;
+    @Autowired private Messages messages;
 
     // ---------- TOP: Attendance ----------
     @ViewComponent private CollectionContainer<AttendanceRecord> attendanceDc;
+    @ViewComponent private EntityComboBox<Project> attendanceProjectField;
+    @ViewComponent private Button inBtn;
 
     // ---------- Warehouses / Projects ----------
     @ViewComponent private CollectionContainer<Warehouse> warehousesDc;
@@ -78,7 +83,11 @@ public class LeadDashboardView extends StandardView {
     @Subscribe
     public void onInit(InitEvent event) {
         reloadAttendance();
+        updateAttendanceProjectFieldState();
         quickItemsDc.getMutableItems().clear();
+
+        // Add listener to enable/disable IN button based on project selection
+        attendanceProjectField.addValueChangeListener(e -> updateInBtnState());
     }
 
     @Subscribe
@@ -112,12 +121,18 @@ public class LeadDashboardView extends StandardView {
 
     @Subscribe("inBtn")
     public void onInBtnClick(ClickEvent<Button> event) {
-        handleAttendanceAction(AttendanceAction.IN, "Checked IN");
+        Project selectedProject = attendanceProjectField.getValue();
+        handleAttendanceAction(AttendanceAction.IN,
+                messages.getMessage("com.ghazal.ims2.view.attendance/checkedIn"),
+                selectedProject);
     }
 
     @Subscribe("outBtn")
     public void onOutBtnClick(ClickEvent<Button> event) {
-        handleAttendanceAction(AttendanceAction.OUT, "Checked OUT");
+        // Project will be auto-filled by service from the IN record
+        handleAttendanceAction(AttendanceAction.OUT,
+                messages.getMessage("com.ghazal.ims2.view.attendance/checkedOut"),
+                null);
     }
 
 //    @Subscribe("breakBtn")
@@ -130,14 +145,61 @@ public class LeadDashboardView extends StandardView {
 //        handleAttendanceAction(AttendanceAction.BREAK_END, "Break ended");
 //    }
 
-    private void handleAttendanceAction(AttendanceAction action, String successMessage) {
+    private void handleAttendanceAction(AttendanceAction action, String successMessage, Project selectedProject) {
         try {
-            attendanceService.markAction(action);
+            attendanceService.markAction(action, selectedProject);
             notifications.show(successMessage);
             reloadAttendance();
+            updateAttendanceProjectFieldState();
         } catch (IllegalStateException ex) {
             notifications.show(ex.getMessage());
         }
+    }
+
+    /**
+     * Updates project field state based on current attendance status
+     */
+    private void updateAttendanceProjectFieldState() {
+        List<AttendanceRecord> records = attendanceService.getTodayRecords();
+
+        long inCount = records.stream()
+                .filter(r -> r.getAction() == AttendanceAction.IN)
+                .count();
+        long outCount = records.stream()
+                .filter(r -> r.getAction() == AttendanceAction.OUT)
+                .count();
+
+        boolean isCheckedIn = (inCount != outCount);
+
+        if (isCheckedIn) {
+            attendanceProjectField.setEnabled(false);
+        } else {
+            attendanceProjectField.setEnabled(true);
+            attendanceProjectField.clear();
+        }
+
+        // Update IN button state
+        updateInBtnState();
+    }
+
+    /**
+     * Enables IN button only when project is selected and user is checked out
+     */
+    private void updateInBtnState() {
+        List<AttendanceRecord> records = attendanceService.getTodayRecords();
+
+        long inCount = records.stream()
+                .filter(r -> r.getAction() == AttendanceAction.IN)
+                .count();
+        long outCount = records.stream()
+                .filter(r -> r.getAction() == AttendanceAction.OUT)
+                .count();
+
+        boolean isCheckedOut = (inCount == outCount);
+        boolean hasProjectSelected = attendanceProjectField.getValue() != null;
+
+        // Enable IN button only if user is checked out AND has selected a project
+        inBtn.setEnabled(isCheckedOut && hasProjectSelected);
     }
 
     // ================== Warehouse changed ==================
