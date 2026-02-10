@@ -1,3 +1,7 @@
+* {
+    touch-action: manipulation;
+}
+
 /* 2 cards per row */
 .items-grid {
     display: grid;
