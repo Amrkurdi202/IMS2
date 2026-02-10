@@ -73,10 +73,12 @@ public class LeadDashboardView extends StandardView {
 
     @ViewComponent private TypedTextField<String> customItemNameField;
     @ViewComponent private Button addCustomItemBtn;
+    @ViewComponent private TypedTextField<String> qtyStepField;
 
     // ✅ Build cards from ItemUnitPrice only
     private final Map<Long, List<ItemUnitPrice>> unitPricesByItemId = new HashMap<>();
     private final Map<Long, Item> itemsById = new LinkedHashMap<>();
+    private final Map<Long, Long> itemUsageCounts = new HashMap<>();
 
     // ----------------- lifecycle -----------------
 
@@ -92,6 +94,7 @@ public class LeadDashboardView extends StandardView {
 
     @Subscribe
     public void onBeforeShow(BeforeShowEvent event) {
+        loadItemUsageCounts();
         warehousesDl.load();
         projectsDl.load();
 
@@ -109,6 +112,25 @@ public class LeadDashboardView extends StandardView {
         unitPricesByItemId.clear();
         itemsById.clear();
         rebuildItemCards(null);
+    }
+
+    private void loadItemUsageCounts() {
+        itemUsageCounts.clear();
+        // Aggregate usage count from OrderItem
+        List<KeyValueEntity> stats = dataManager.loadValues(
+                        "select e.item.id, count(e) from ORDER_ITEM e " +
+                                "where e.item is not null " +
+                                "group by e.item.id")
+                .properties("itemId", "cnt")
+                .list();
+
+        for (KeyValueEntity kv : stats) {
+            Long itemId = kv.getValue("itemId");
+            Long cnt = kv.getValue("cnt");
+            if (itemId != null && cnt != null) {
+                itemUsageCounts.put(itemId, cnt);
+            }
+        }
     }
 
 
@@ -263,7 +285,8 @@ public class LeadDashboardView extends StandardView {
                     String name = it.getName();
                     return name != null && name.toLowerCase().contains(normalized);
                 })
-                .sorted(Comparator.comparing(i -> i.getName() == null ? "" : i.getName()))
+                .sorted(Comparator.comparing((Item i) -> itemUsageCounts.getOrDefault(i.getId(), 0L)).reversed()
+                        .thenComparing(i -> i.getName() == null ? "" : i.getName()))
                 .collect(Collectors.toList());
 
         for (Item item : filtered) {
@@ -326,20 +349,21 @@ public class LeadDashboardView extends StandardView {
 
     // ========== cart helpers ==========
 
-    private int safeInt(Object value) {
-        if (value instanceof Number) return ((Number) value).intValue();
+    private BigDecimal safeBigDecimal(Object value) {
+        if (value instanceof BigDecimal) return (BigDecimal) value;
+        if (value instanceof Number) return BigDecimal.valueOf(((Number) value).doubleValue());
         if (value instanceof String s) {
-            try { return Integer.parseInt(s); } catch (NumberFormatException ignored) {}
+            try { return new BigDecimal(s); } catch (NumberFormatException ignored) {}
         }
-        return 0;
+        return BigDecimal.ZERO;
     }
 
     private String safeString(Object value) {
         return value != null ? value.toString() : null;
     }
 
-    private void setQuantity(KeyValueEntity e, int qty) {
-        e.setValue("quantity", String.valueOf(qty));
+    private void setQuantity(KeyValueEntity e, BigDecimal qty) {
+        e.setValue("quantity", qty.stripTrailingZeros().toPlainString());
     }
 
     // add catalog row
@@ -370,8 +394,8 @@ public class LeadDashboardView extends StandardView {
                 .orElse(null);
 
         if (existing != null) {
-            int qty = safeInt(existing.getValue("quantity"));
-            setQuantity(existing, qty + 1);
+            BigDecimal qty = safeBigDecimal(existing.getValue("quantity"));
+            setQuantity(existing, qty.add(BigDecimal.ONE));
             quickItemsDc.replaceItem(existing);
         } else {
             KeyValueEntity entity = new KeyValueEntity();
@@ -380,7 +404,7 @@ public class LeadDashboardView extends StandardView {
             entity.setValue("itemUnitPriceId", itemUnitPriceId);
             entity.setValue("warehouse", warehouseName);
             entity.setValue("project", projectName);
-            setQuantity(entity, 1);
+            setQuantity(entity, BigDecimal.ONE);
             quickItemsDc.getMutableItems().add(entity);
         }
     }
@@ -410,6 +434,16 @@ public class LeadDashboardView extends StandardView {
 
     // ---- bottom +/-/delete buttons ----
 
+    private BigDecimal getStepValue() {
+        String val = qtyStepField.getValue();
+        if (val == null || val.isBlank()) return BigDecimal.ONE;
+        try {
+            return new BigDecimal(val.trim());
+        } catch (Exception e) {
+            return BigDecimal.ONE;
+        }
+    }
+
     @Subscribe("increaseQtyBtn")
     public void onIncreaseQtyBtnClick(ClickEvent<Button> event) {
         KeyValueEntity selected = quickItemsTable.getSingleSelectedItem();
@@ -417,8 +451,8 @@ public class LeadDashboardView extends StandardView {
             notifications.show(messageBundle.getMessage("LeadDashboardView.selectLineFirst"));
             return;
         }
-        int qty = safeInt(selected.getValue("quantity"));
-        setQuantity(selected, qty + 1);
+        BigDecimal qty = safeBigDecimal(selected.getValue("quantity"));
+        setQuantity(selected, qty.add(getStepValue()));
         quickItemsDc.replaceItem(selected);
     }
 
@@ -429,8 +463,9 @@ public class LeadDashboardView extends StandardView {
             notifications.show(messageBundle.getMessage("LeadDashboardView.selectLineFirst"));
             return;
         }
-        int qty = safeInt(selected.getValue("quantity"));
-        int newQty = Math.max(1, qty - 1);
+        BigDecimal qty = safeBigDecimal(selected.getValue("quantity"));
+        BigDecimal newQty = qty.subtract(getStepValue());
+        if (newQty.compareTo(BigDecimal.ZERO) < 0) newQty = BigDecimal.ZERO;
         setQuantity(selected, newQty);
         quickItemsDc.replaceItem(selected);
     }
@@ -473,10 +508,12 @@ public class LeadDashboardView extends StandardView {
         for (KeyValueEntity row : quickItemsDc.getItems()) {
             String lineName = safeString(row.getValue("item"));
             String iupIdStr  = safeString(row.getValue("itemUnitPriceId"));
-            int qtyInt = Math.max(1, safeInt(row.getValue("quantity")));
+            BigDecimal qty = safeBigDecimal(row.getValue("quantity"));
+
+            if (qty.compareTo(BigDecimal.ZERO) <= 0) continue;
 
             OrderItem line = dataManager.create(OrderItem.class);
-            line.setQuantity(BigDecimal.valueOf(qtyInt));
+            line.setQuantity(qty);
             line.setOrder(order);
 
             if (iupIdStr != null && !iupIdStr.isBlank()) {

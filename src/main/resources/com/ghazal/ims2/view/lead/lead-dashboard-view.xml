@@ -138,6 +138,7 @@
 
             <hbox spacing="true" classNames="mt-s">
                 <button id="decreaseQtyBtn" text="msg://com.ghazal.ims2.view.lead/decrease"/>
+                <textField id="qtyStepField" width="5em" value="1"/>
                 <button id="increaseQtyBtn" text="msg://com.ghazal.ims2.view.lead/increase"/>
                 <button id="deleteLineBtn" text="msg://common.delete"/>
                 <button id="saveOrderBtn"
