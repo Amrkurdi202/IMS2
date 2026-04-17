@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://com.ghazal.ims2.view.warehouse/WarehouseStockView.title"
+      focusComponent="warehouseField">
+
+    <data>
+        <collection id="warehousesDc" class="com.ghazal.ims2.entity.Warehouse">
+            <fetchPlan extends="_base">
+                <property name="name"/>
+                <property name="internal"/>
+            </fetchPlan>
+            <loader id="warehousesDl">
+                <query><![CDATA[
+                    select w from Warehouse w
+                    where w.internal = true
+                    order by w.name
+                ]]></query>
+            </loader>
+        </collection>
+
+        <keyValueCollection id="reportDc">
+            <properties>
+                <property name="itemName" class="java.lang.String"/>
+                <property name="unitName" class="java.lang.String"/>
+                <property name="stockQty" class="java.math.BigDecimal"/>
+            </properties>
+            <loader id="reportDl">
+                <query><![CDATA[
+                    select oi.item.name as itemName,
+                           coalesce(oi.unit.name, '') as unitName,
+                           0 - sum(coalesce(oi.quantity, 0)) as stockQty
+                    from ORDER_ITEM oi join oi.order o
+                    where o.warehouse = :warehouse
+                      and oi.item is not null
+                      and (:q is null or :q = ''
+                           or lower(oi.item.name) like concat('%', lower(:q), '%'))
+                    group by oi.item.name, oi.unit.name
+                    order by oi.item.name
+                ]]></query>
+            </loader>
+        </keyValueCollection>
+    </data>
+
+    <facets>
+        <dataLoadCoordinator auto="false"/>
+    </facets>
+
+    <layout>
+        <vbox spacing="true" padding="true">
+            <hbox spacing="true" alignItems="END">
+                <entityComboBox id="warehouseField"
+                                metaClass="Warehouse"
+                                itemsContainer="warehousesDc"
+                                label="msg://com.ghazal.ims2.view.report/warehouseInternal"
+                                width="300px"/>
+                <textField id="qField"
+                           label="msg://com.ghazal.ims2.view.report/searchItem"
+                           width="260px"/>
+                <button id="exportPdfBtn"
+                        text="msg://com.ghazal.ims2.view.report/exportPdf"
+                        icon="DOWNLOAD"/>
+                <button id="addStockBtn"
+                        text="msg://com.ghazal.ims2.view.warehouse/WarehouseStockView.addStock"
+                        themeNames="primary"/>
+            </hbox>
+
+            <dataGrid id="grid"
+                      dataContainer="reportDc"
+                      width="100%">
+                <columns>
+                    <column property="itemName"
+                            header="msg://com.ghazal.ims2.view.warehouse/WarehouseStockView.itemName"
+                            resizable="true"/>
+                    <column property="unitName"
+                            header="msg://com.ghazal.ims2.entity/Unit"
+                            resizable="true"
+                            width="140px"/>
+                    <column property="stockQty"
+                            header="msg://com.ghazal.ims2.view.warehouse/WarehouseStockView.stockQty"
+                            resizable="true"
+                            width="150px"/>
+                </columns>
+            </dataGrid>
+        </vbox>
+    </layout>
+</view>
