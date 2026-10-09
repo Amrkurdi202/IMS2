@@ -9,7 +9,7 @@ import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route("")
+@Route("main")
 @ViewController("MainView")
 @ViewDescriptor("main-view.xml")
 public class MainView extends StandardMainView implements BeforeEnterObserver {
@@ -30,6 +30,7 @@ public class MainView extends StandardMainView implements BeforeEnterObserver {
                 );
 
         String path = event.getLocation().getPath();
+        boolean atMainView = path == null || path.isBlank() || "main".equals(path);
 
 
         boolean isWorker = auth.getAuthorities().stream()
@@ -41,13 +42,13 @@ public class MainView extends StandardMainView implements BeforeEnterObserver {
                         || "admin".equalsIgnoreCase(a.getAuthority()));
 
 
-        if ((isAdmin || isLead) && (path == null || path.isBlank())) {
+        if ((isAdmin || isLead) && atMainView) {
             event.forwardTo("lead-dashboard");
             return;
         }
 
 
-        if (isWorker && (path == null || path.isBlank())) {
+        if (isWorker && atMainView) {
             event.forwardTo("attendance");
         }
     }

@@ -10,6 +10,8 @@
                 <property name="name"/>
                 <property name="internal"/>
                 <property name="image"/>
+                <property name="latitude"/>
+                <property name="longitude"/>
             </fetchPlan>
             <loader/>
         </instance>
@@ -40,6 +42,24 @@
                                  clearButtonVisible="true"
                                  fileNameVisible="true"/>
             </vbox>
+
+            <hbox>
+                <numberField id="latitudeField"
+                             property="latitude"
+                             label="msg://com.ghazal.ims2.view.warehouse/warehouse.latitude"
+                             dataContainer="warehouseDc"
+                             step="0.000001"
+                             width="50%"/>
+                <numberField id="longitudeField"
+                             property="longitude"
+                             label="msg://com.ghazal.ims2.view.warehouse/warehouse.longitude"
+                             dataContainer="warehouseDc"
+                             step="0.000001"
+                             width="50%"/>
+                <button id="readGpsBtn"
+                        text="msg://com.ghazal.ims2.view.warehouse/warehouse.readGps"
+                        icon="MAP_MARKER"/>
+            </hbox>
         </formLayout>
 
         <hbox id="detailActions">

@@ -19,7 +19,7 @@
                 <h2 id="applicationTitle"
                     classNames="jmix-main-view-application-title">
                     <anchor id="baseLink"
-                            href="."
+                            href="main"
                             text="msg://applicationTitle.text"
                             classNames="jmix-main-view-application-title-base-link"/>
                 </h2>

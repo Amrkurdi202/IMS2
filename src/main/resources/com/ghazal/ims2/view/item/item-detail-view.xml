@@ -25,6 +25,13 @@
                            required="true"
                            dataContainer="itemDc"/>
 
+                <textField id="barcodeField"
+                           property="barcode"
+                           label="msg://com.ghazal.ims2.view.item/item.barcode"
+                           dataContainer="itemDc"
+                           classNames="barcode"
+                           clearButtonVisible="true"/>
+
                 <!-- 🔹 Image now has size-limiting CSS class -->
                 <image id="image"
                        property="image"

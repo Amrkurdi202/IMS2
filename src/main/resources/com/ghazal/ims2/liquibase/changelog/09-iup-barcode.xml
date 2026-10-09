@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.31.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="09-iup-barcode-1" author="amr">
+        <addColumn tableName="item_unit_price">
+            <column name="barcode" type="VARCHAR(100)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="09-iup-barcode-2" author="amr">
+        <createIndex tableName="item_unit_price" indexName="ux_item_unit_price_barcode" unique="true">
+            <column name="barcode"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

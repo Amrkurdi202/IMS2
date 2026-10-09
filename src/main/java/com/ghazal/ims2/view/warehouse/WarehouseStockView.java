@@ -128,9 +128,12 @@ public class WarehouseStockView extends StandardView {
         layout.setPadding(false);
         layout.setSpacing(true);
 
+        List<Item> allItems = dataManager.load(Item.class)
+                .query("select i from Item i order by i.name").list();
         ComboBox<Item> itemCombo = new ComboBox<>(messageBundle.getMessage("WarehouseStockView.itemLabel"));
-        itemCombo.setItems(dataManager.load(Item.class)
-                .query("select i from Item i order by i.name").list());
+        itemCombo.setItems(
+                (item, filter) -> item.getName().toLowerCase().contains(filter.toLowerCase()),
+                allItems);
         itemCombo.setItemLabelGenerator(Item::getName);
         itemCombo.setWidth("100%");
 

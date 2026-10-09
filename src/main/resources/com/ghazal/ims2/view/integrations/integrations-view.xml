@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://com.ghazal.ims2.view.integrations/integrations.title">
+
+    <layout>
+        <vbox spacing="true" padding="true" width="760px">
+
+            <!-- n8n snapshot sync -->
+            <span text="msg://com.ghazal.ims2.view.integrations/n8n.section"
+                  classNames="section-title"/>
+
+            <textField id="urlField"
+                       label="msg://com.ghazal.ims2.view.integrations/n8n.url"
+                       width="100%"
+                       maxLength="500"/>
+
+            <passwordField id="secretField"
+                           label="msg://com.ghazal.ims2.view.integrations/n8n.secret"
+                           width="400px"
+                           maxLength="300"/>
+
+            <hbox spacing="true" alignItems="CENTER">
+                <button id="saveSyncBtn"
+                        text="msg://com.ghazal.ims2.view.integrations/n8n.saveSync"
+                        themeNames="primary"/>
+                <button id="resyncBtn"
+                        text="msg://com.ghazal.ims2.view.integrations/n8n.resync"/>
+            </hbox>
+
+            <span id="configuredLabel" text=""/>
+            <span id="lastSyncLabel" text=""/>
+            <span id="pendingLabel" text=""/>
+            <span id="errorLabel" text=""/>
+
+            <!-- MCP read-only tools -->
+            <span text="msg://com.ghazal.ims2.view.integrations/mcp.section"
+                  classNames="section-title"/>
+
+            <hbox spacing="true" alignItems="END">
+                <textField id="mcpTokenField"
+                           label="msg://com.ghazal.ims2.view.integrations/mcp.token"
+                           width="400px"
+                           maxLength="64"
+                           readOnly="true"/>
+                <button id="regenBtn"
+                        text="msg://com.ghazal.ims2.view.integrations/mcp.regenerate"/>
+            </hbox>
+
+            <textField id="endpointField"
+                       label="msg://com.ghazal.ims2.view.integrations/mcp.endpoint"
+                       width="100%"
+                       readOnly="true"/>
+
+            <span id="mcpToolsLabel"
+                  text="msg://com.ghazal.ims2.view.integrations/mcp.tools"/>
+            <span id="mcpHintLabel"
+                  text="msg://com.ghazal.ims2.view.integrations/mcp.hint"/>
+
+        </vbox>
+    </layout>
+</view>

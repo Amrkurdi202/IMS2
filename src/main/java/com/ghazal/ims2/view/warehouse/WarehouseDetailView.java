@@ -9,10 +9,13 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.image.JmixImage;
+import io.jmix.flowui.component.textfield.JmixNumberField;
 import io.jmix.flowui.component.upload.FileUploadField;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.kit.component.upload.event.FileUploadSucceededEvent;
+import io.jmix.flowui.Notifications;
 import io.jmix.flowui.view.*;
+import com.ghazal.ims2.view.common.GeoLocator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,8 +33,20 @@ public class WarehouseDetailView extends AutoSaveDetailView<Warehouse> {
     @ViewComponent
     private JmixComboBox<Boolean> internalField;
 
+    @ViewComponent
+    private JmixNumberField latitudeField;
+
+    @ViewComponent
+    private JmixNumberField longitudeField;
+
     @Autowired
     private WarehouseRepository warehouseRepository;
+
+    @Autowired
+    private Notifications notifications;
+
+    @Autowired
+    private MessageBundle messageBundle;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -64,5 +79,29 @@ public class WarehouseDetailView extends AutoSaveDetailView<Warehouse> {
     public void onSaveAndCloseButtonClick(ClickEvent<JmixButton> event) {
         warehouseRepository.save(getEditedEntity());
         closeWithSave();
+    }
+
+    @Subscribe("readGpsBtn")
+    public void onReadGpsBtnClick(ClickEvent<com.vaadin.flow.component.button.Button> event) {
+        GeoLocator.request(this, "gpsResult");
+    }
+
+    @com.vaadin.flow.component.ClientCallable
+    public void gpsResult(String payload) {
+        GeoLocator.GeoPoint point = GeoLocator.parse(payload);
+        if (point == null) {
+            notifications.create(messageBundle.getMessage("warehouse.gpsFailed"))
+                    .withType(Notifications.Type.WARNING)
+                    .show();
+            return;
+        }
+        Warehouse w = getEditedEntity();
+        w.setLatitude(point.latitude());
+        w.setLongitude(point.longitude());
+        latitudeField.setValue(point.latitude());
+        longitudeField.setValue(point.longitude());
+        notifications.create(messageBundle.getMessage("warehouse.gpsRead"))
+                .withType(Notifications.Type.SUCCESS)
+                .show();
     }
 }

@@ -1,5 +1,6 @@
 package com.ghazal.ims2.view.login;
 
+import com.ghazal.ims2.view.common.PublicPageLanguage;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.AbstractLogin.LoginEvent;
 import com.vaadin.flow.component.login.LoginI18n;
@@ -62,6 +63,11 @@ public class LoginView extends StandardView implements LocaleChangeObserver {
     public void onInit(final InitEvent event) {
         initLocales();
         initDefaultCredentials();
+        login.addLocaleChangedListener(localeChangedEvent -> {
+            if (localeChangedEvent.isFromClient()) {
+                PublicPageLanguage.remember(localeChangedEvent.getValue());
+            }
+        });
     }
 
     private void initLocales() {

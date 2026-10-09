@@ -24,11 +24,15 @@ public interface LeadRole {
     @MenuPolicy(menuIds = {
             "application",
             "LeadDashboardMenu", // Dashboard
-            "LeadOrdersMenu"     // My Orders
+            "LeadOrdersMenu",    // My Orders
+            "BarcodeScanMenu",   // Barcode scanning
+            "IntegrationsMenu"   // n8n + MCP integrations
     })
     @ViewPolicy(viewIds = {
             "LeadDashboard.view",
             "LeadOrder.list",
+            "BarcodeScanView",
+            "IntegrationsView",
 
             // Order CRUD
             "ims_order.list",
@@ -113,6 +117,14 @@ public interface LeadRole {
             attributes = "*",
             action = EntityAttributePolicyAction.VIEW)
     void unit();
+
+    // Integration settings (n8n sync config, MCP token, revision)
+    @EntityPolicy(entityClass = AppSetting.class,
+            actions = {EntityPolicyAction.READ, EntityPolicyAction.CREATE, EntityPolicyAction.UPDATE})
+    @EntityAttributePolicy(entityClass = AppSetting.class,
+            attributes = "*",
+            action = EntityAttributePolicyAction.MODIFY)
+    void appSetting();
 
 
 

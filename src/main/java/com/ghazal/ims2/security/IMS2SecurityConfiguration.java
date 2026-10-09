@@ -1,6 +1,10 @@
 package com.ghazal.ims2.security;
 
+import io.jmix.core.JmixSecurityFilterChainOrder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -32,4 +36,28 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class IMS2SecurityConfiguration {
 
+    /**
+     * Makes static images available on public pages, e.g. the landing page and the privacy policy.
+     */
+    @Bean
+    @Order(JmixSecurityFilterChainOrder.CUSTOM)
+    SecurityFilterChain publicImagesFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher("/images/**")
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
+        return http.build();
+    }
+
+    /**
+     * Exposes the MCP endpoint to external AI clients. The endpoint itself authenticates
+     * each request with a Bearer token stored in app_setting (mcp.token), so no session
+     * login is required here. CSRF is irrelevant for bearer-token JSON-RPC calls.
+     */
+    @Bean
+    @Order(JmixSecurityFilterChainOrder.CUSTOM + 1)
+    SecurityFilterChain mcpFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher("/mcp", "/mcp/**")
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
+        return http.build();
+    }
 }

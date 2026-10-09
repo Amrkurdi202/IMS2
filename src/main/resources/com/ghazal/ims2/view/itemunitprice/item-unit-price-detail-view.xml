@@ -54,6 +54,13 @@
                 </actions>
             </entityPicker>
 
+            <textField id="barcodeField"
+                       property="barcode"
+                       label="msg://com.ghazal.ims2.view.itemunitprice/itemUnitPrice.barcode"
+                       dataContainer="itemUnitPriceDc"
+                       classNames="barcode"
+                       clearButtonVisible="true"/>
+
         </formLayout>
 
         <hbox id="actionsBox" classNames="buttons-panel" spacing="true">

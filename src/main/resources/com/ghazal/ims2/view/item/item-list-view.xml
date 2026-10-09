@@ -36,6 +36,11 @@
             <button id="createButton" action="itemsDataGrid.create"/>
             <button id="editButton" action="itemsDataGrid.edit"/>
             <button id="removeButton" action="itemsDataGrid.remove"/>
+            <button id="generateBarcodesBtn"
+                    text="msg://com.ghazal.ims2.view.item/item.generateMissing"/>
+            <button id="openLabelsBtn"
+                    text="msg://com.ghazal.ims2.view.item/item.openLabels"
+                    icon="PRINT"/>
             <simplePagination id="pagination" dataLoader="itemsDl"/>
         </hbox>
 
@@ -53,8 +58,11 @@
             </actions>
             <columns resizable="true">
                 <column property="name"/>
+                <column property="barcode" header="msg://com.ghazal.ims2.view.item/item.barcode"/>
                 <!-- 🔹 image column that will show the picture in list & lookup -->
                 <column property="image" header="msg://common.photo"/>
+                <column key="print" autoWidth="true" flexGrow="0"
+                        header="msg://com.ghazal.ims2.view.item/item.printLabel"/>
             </columns>
         </dataGrid>
 

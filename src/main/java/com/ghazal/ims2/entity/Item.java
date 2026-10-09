@@ -17,6 +17,9 @@ public class Item extends BaseEntity {
     @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] image;
 
+    @Column(name = "barcode", length = 100)
+    private String barcode;
+
     public Item() {
     }
 
@@ -35,6 +38,15 @@ public class Item extends BaseEntity {
 
     public Item setImage(byte[] image) {
         this.image = image;
+        return this;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public Item setBarcode(String barcode) {
+        this.barcode = barcode;
         return this;
     }
 

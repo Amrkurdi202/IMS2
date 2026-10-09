@@ -24,7 +24,7 @@ public class OrderItem {
     @JoinColumn(name = "UNIT_ID")   // nullable => can be null for custom items
     private Unit unit;
 
-    @Column(name = "QUANTITY", nullable = false)
+    @Column(name = "QUANTITY", nullable = false, precision = 13, scale = 3)
     private BigDecimal quantity;
 
     // price at the time of order (for normal catalog items)

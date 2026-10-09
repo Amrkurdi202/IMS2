@@ -27,6 +27,9 @@ public class ItemUnitPrice extends BaseEntity {
     @JoinColumn(name = "WAREHOUSE_ID", nullable = false)
     private Warehouse warehouse;
 
+    @Column(name = "barcode", length = 100)
+    private String barcode;
+
     public Item getItem() {
         return item;
     }
@@ -41,6 +44,10 @@ public class ItemUnitPrice extends BaseEntity {
 
     public Warehouse getWarehouse() {
         return warehouse;
+    }
+
+    public String getBarcode() {
+        return barcode;
     }
 
     public ItemUnitPrice setItem(Item item) {
@@ -60,6 +67,11 @@ public class ItemUnitPrice extends BaseEntity {
 
     public ItemUnitPrice setWarehouse(Warehouse warehouse) {
         this.warehouse = warehouse;
+        return this;
+    }
+
+    public ItemUnitPrice setBarcode(String barcode) {
+        this.barcode = barcode;
         return this;
     }
 }

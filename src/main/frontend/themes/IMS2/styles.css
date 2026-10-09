@@ -2,7 +2,23 @@
 @import url('view/main-view.css');
 @import url('view/main-view-top-menu.css');
 @import url('view/login-view.css');
+@import url('view/landing-view.css');
+@import url('view/privacy-view.css');
 
 html, body {
     touch-action: manipulation;
+}
+/* ---- Barcode feature ---- */
+.barcode::part(input),
+.barcode-input::part(input) {
+    direction: ltr;
+    font-family: ui-monospace, "Courier New", monospace;
+    letter-spacing: 0.5px;
+}
+.barcode-input::part(input) {
+    font-size: 20px;
+    min-height: 48px;
+}
+.scan-shell {
+    max-width: 960px;
 }

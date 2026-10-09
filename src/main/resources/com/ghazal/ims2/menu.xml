@@ -32,6 +32,16 @@
     <item view="ItemWarehousesReportView" title="msg://com.ghazal.ims2.view.report/ItemWarehousesReportView.title"/>
     <item view="WarehouseStockView" title="msg://com.ghazal.ims2/menu.warehouseStock"/>
 
+    <!-- Barcode scanning (internal warehouses) -->
+    <item id="BarcodeScanMenu"
+          view="BarcodeScanView"
+          title="msg://com.ghazal.ims2/menu.barcodeScan"/>
+
+    <!-- External integrations: n8n snapshot push + MCP endpoint -->
+    <item id="IntegrationsMenu"
+          view="IntegrationsView"
+          title="msg://com.ghazal.ims2/menu.integrations"/>
+
 
 
     <!-- Lead Dashboard: attendance (top) + orders (bottom) -->

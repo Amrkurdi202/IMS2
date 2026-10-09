@@ -47,6 +47,8 @@
             <button id="createButton" action="itemUnitPricesDataGrid.create"/>
             <button id="editButton" action="itemUnitPricesDataGrid.edit"/>
             <button id="removeButton" action="itemUnitPricesDataGrid.remove"/>
+            <button id="generateBarcodesBtn"
+                    text="msg://com.ghazal.ims2.view.itemunitprice/itemUnitPrice.generateMissing"/>
             <simplePagination id="pagination" dataLoader="itemUnitPricesDl"/>
         </hbox>
 
@@ -63,9 +65,12 @@
 
             <columns resizable="true">
                 <column property="item"/>
+                <column property="barcode" header="msg://com.ghazal.ims2.view.itemunitprice/itemUnitPrice.barcode"/>
                 <column property="unit"/>
                 <column property="price"/>
                 <column property="warehouse"/>
+                <column key="print" autoWidth="true" flexGrow="0"
+                        header="msg://com.ghazal.ims2.view.itemunitprice/itemUnitPrice.printLabel"/>
             </columns>
         </dataGrid>
 
